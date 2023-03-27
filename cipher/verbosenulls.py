@@ -46,21 +46,20 @@ def change_key(key, cipher_text, plain_alphabet):
         diff=list(set(plain_alphabet)-set(key.values()))
         if list(key.values()).count('_')<(len(plain_alphabet)/4) and random.random()>.5:
           diff=diff+['_'] # possibly add a null
-        if len(diff)>0 and random.random()>.2: #.01:-49.8
+        if len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.5): # .2: -11.86687
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
           del key[random.choice(list(key.keys()))]
   elif rand>.3: #.07:-51.6
-    switch = True
-    while switch:
         i = random.choice(klist)
         j = random.choice(klist)
+        count=0
+        while key[i]==key[j] and count<999:
+          j = random.choice(klist)
+          count+=1
         temp = key[i]
         key[i] = key[j]
         key[j] = temp
-
-        if key[i] != key[j]:
-            switch=False
   else:
     k = random.choice(klist)
     temp=key[k]
@@ -76,6 +75,6 @@ def score(quad_score, plain_text):
   # favor solutions resulting in longer text
   ##print("W:" + my_longest_word)
   lexicon_score=cipher_utils.evaluate_by_lexicon(plain_text, my_lexicon, my_longest_word, my_lexicon_avg_len)
-  weight=3 # higher weight: more relevance of quadgrams
+  weight=1.5 # higher weight: more relevance of quadgrams 3:-11.86687
   return quad_score/(weight+lexicon_score*math.pow(len(plain_text),0.5))
 
