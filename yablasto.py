@@ -197,7 +197,7 @@ def score_text(text, module):
         temp[3] = alpha.find(text[i+3])
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
-    quad_score=score/float(len(text)-3)
+    quad_score=score/float(max(0.001,len(text)-3)) # max: avoid division by zero
 
     return module.score(quad_score,text),quad_score
     

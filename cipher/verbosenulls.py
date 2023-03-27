@@ -6,6 +6,10 @@ import math
 import string
 import copy
 
+my_lexicon=''
+my_longest_word=''
+my_lexicon_avg_len=''
+
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet)
@@ -13,7 +17,12 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet):
 
 # TODO
 def set_lexicon(lexicon, longest_word, lexicon_avg_len):
-  return
+  global my_longest_word
+  global my_lexicon
+  global my_lexicon_avg_len
+  my_lexicon=lexicon
+  my_longest_word=longest_word
+  my_lexicon_avg_len=lexicon_avg_len
 
 ######
 ''' create Initial key '''
@@ -36,8 +45,7 @@ def change_key(key, cipher_text, plain_alphabet):
   if rand>.8: # add or remove key 960 950?: 52.1; 990 -51.8
         diff=list(set(plain_alphabet)-set(key.values()))
         if list(key.values()).count('_')<(len(plain_alphabet)/4) and random.random()>.5:
-          diff=diff+['_']       
-        #if len(diff)>0 and random.random()>pow(float(len(key))/float(len(plain_alphabet)),2): # 2: 52.1
+          diff=diff+['_'] # possibly add a null
         if len(diff)>0 and random.random()>.2: #.01:-49.8
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
@@ -66,5 +74,8 @@ def change_key(key, cipher_text, plain_alphabet):
   
 def score(quad_score, plain_text):
   # favor solutions resulting in longer text
-  return quad_score/(math.pow(len(plain_text),0.1))
+  ##print("W:" + my_longest_word)
+  lexicon_score=cipher_utils.evaluate_by_lexicon(plain_text, my_lexicon, my_longest_word, my_lexicon_avg_len)
+  weight=3 # higher weight: more relevance of quadgrams
+  return quad_score/(weight+lexicon_score*math.pow(len(plain_text),0.5))
 
