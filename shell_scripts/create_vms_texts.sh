@@ -23,5 +23,5 @@ cat ../texts/vms/$p'.cuva' | tr [:upper:] [:lower:] > temp.cuva
 mv temp.cuva  ../texts/vms/$p'.cuva'
 cat ../texts/vms/$p'.eva' | sed -f eva_bench_gallows.sed > ../texts/vms/$p'.bg' # bench and gallows replaced
 cat ../texts/vms/$p'.bg'| tr -d ' ' | sed -f feaster_spaces.sed > ../texts/vms/$p'.feaster'
-cat ../texts/vms/$p'.feaster' | sed -f more_spaces.sed > ../texts/vms/$p'.syl'
+cat ../texts/vms/$p'.feaster' | sed -f more_spaces.sed | tr ' ' '_' > ../texts/vms/$p'.syl'
 done

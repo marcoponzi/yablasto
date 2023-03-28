@@ -4,5 +4,8 @@ s/cfh/3/g
 s/ckh/4/g
 s/cph/5/g
 s/cth/6/g
-s/ii*/i/g
-s/ee*/e/g
+s/n/i/g
+s/iiii/9/g
+s/iii/8/g
+s/ii/7/g
+s/ee/0/g
