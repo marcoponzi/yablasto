@@ -27,9 +27,9 @@ def change_key(key, cipher_text, plain_alphabet):
     
     diff=set(plain_alphabet)-set(key.values())
     
-    if len(diff)>0 and random.random()<.2: #pick unused plain character 0.2 -6.931807
+    if len(diff)>0 and random.random()<.2: #pick unused plain character 0.2 -98
       key[random.choice(klist)]=random.choice(list(diff))
-    elif list(key.values()).count('_')<len(key)/2 and random.random()<.03: # add a new null 0.03 -6.931807
+    elif list(key.values()).count('_')<len(key)/2 and random.random()<.03: # add a new null 0.03 -98
       k=random.choice(klist)
       while key[k]=='_':
         k=random.choice(klist)
