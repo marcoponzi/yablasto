@@ -4,7 +4,7 @@ import sys
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-      cipher_alphabet=list(set(list(cipher_text)))
+      text_list=list(cipher_text)
       cipher_bit=''
       rand=random.random()
       if rand>.9:
@@ -12,10 +12,10 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet):
         if cipher_bit in key.keys():
           cipher_bit=''
       elif cipher_bit=='' or rand >.5: # character
-        cipher_bit=random.choice(cipher_alphabet)
+        cipher_bit=random.choice(text_list)
         count=0
         while cipher_bit in key.keys() and count<1000:
-          cipher_bit=random.choice(cipher_alphabet)
+          cipher_bit=random.choice(text_list)
           count+=1
         if cipher_bit in key.keys():
           cipher_bit=''
@@ -46,7 +46,7 @@ def init_key(cipher_text, plain_alphabet):
 ''' swap 2 letters '''
 def change_key(key, cipher_text, plain_alphabet):
   klist=list(key.keys())
-  if random.random()>.1:
+  if random.random()>.05: #.2 : 78
     switch = True
     while switch:
         i = random.choice(klist)
@@ -58,10 +58,12 @@ def change_key(key, cipher_text, plain_alphabet):
         if key[i] != key[j]:
             switch=False
   else:
-    i = random.choice(klist)
-    temp=key[i]
-    newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)    
-    del key[i]
+    k = random.choice(klist)
+    temp=key[k]
+    newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
+    while newkey==k:
+      newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
+    del key[k]
     key[newkey]=temp
 
   return decipher_utils.sort_dict(key)
