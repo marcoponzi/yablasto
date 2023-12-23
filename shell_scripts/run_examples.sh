@@ -1,5 +1,5 @@
 
-RESTARTS=400
+RESTARTS=300
 
 echo 
 echo lat texts/examples/desine.lat.simple simplesub 50
@@ -12,8 +12,8 @@ time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.sy
 cat tmp/out.syl | tail -10
 
 echo
-echo lat texts/examples/desine.lat.nulls nulls $RESTARTS
-time python3.6 yablasto.py lat texts/examples/desine.lat.nulls nulls $RESTARTS  > tmp/out.nulls
+echo eng texts/examples/letthewaters.eng.nulls nulls $RESTARTS
+time python3.6 yablasto.py eng texts/examples/letthewaters.eng.nulls nulls  $RESTARTS  > tmp/out.nulls
 cat tmp/out.nulls | tail -10
 
 echo 
