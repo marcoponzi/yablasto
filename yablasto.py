@@ -171,11 +171,13 @@ def score_text(text):
         temp[3] = alpha.find(text[i+3])
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
-    res=score/float(len(text)-3)
+    quad_res=score/float(len(text)-3)
     ### log("SCORE "+str(text)+" "+str(res))
     #return res/float(math.sqrt(len(text)))
     #return res/(len(set(list(text)))*float(math.sqrt(len(text))))
-    return 100.0*res/(math.pow(len(set(list(text))),0.7)*math.sqrt(len(text)))
+    # favor longer decipherments with more varied alphabets
+    weight=15 # heigher weight, more relevance to quadgrams
+    return 100.0*quad_res/(weight+math.pow(len(set(list(text))),0.6)*math.pow(len(text),0.6))
     
 def key_to_str(mydict):
   res=''
@@ -241,7 +243,8 @@ else:
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
-     if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
+     #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
+     if len(best_res['key'])==0 or random.random()>(math.sqrt(perc_progress)*1.2): 
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
         log("RAND KEY "+key_to_str(parent_key))
