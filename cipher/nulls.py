@@ -53,6 +53,6 @@ def change_key(key, cipher_text, plain_alphabet):
     return cipher_utils.sort_dict(key)
     
 def score(quad_score, plain_text):
-  # favor solutions resulting in longet text and more varied alphabet (fewer nulls)
+  # favor solutions resulting in longer text and more varied alphabet (fewer nulls)
   return quad_score/(5+float(len(plain_text))/20.0+math.pow(len(set(plain_text)),1))
 
