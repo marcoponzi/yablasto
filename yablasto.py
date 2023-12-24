@@ -102,7 +102,7 @@ def clean_input(ciphertext):
 
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
-    best_score = score_text(cipher_utils.decrypt(cipher_text,parent_key ))
+    best_score = score_text(cipher_utils.decrypt(cipher_text,parent_key ), module)
     ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
@@ -112,7 +112,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     consec_fails = 0
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
-        child_score = score_text(cipher_utils.decrypt(cipher_text,child_key ))
+        child_score = score_text(cipher_utils.decrypt(cipher_text,child_key ), module)
         if (child_score > best_score):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
@@ -146,8 +146,8 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
 
 
 #####################
-def score_text(text):
-    # [M] handling unreplaced characters as Z
+def score_text(text, module):
+    # [M] handling unreplaced characters as Z TODO
     text=re.sub('[^A-Z]','Z',text)
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
     temp = [0,0,0,0]
@@ -165,12 +165,10 @@ def score_text(text):
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
     quad_res=score/float(len(text)-3)
-    ### log("SCORE "+str(text)+" "+str(res))
-    #return res/float(math.sqrt(len(text)))
-    #return res/(len(set(list(text)))*float(math.sqrt(len(text))))
     # favor longer decipherments with more varied alphabets
-    weight=15 # heigher weight, more relevance to quadgrams
-    return 100.0*quad_res/(weight+math.pow(len(set(list(text))),0.6)*math.pow(len(text),0.6))
+    #weight=15 # heigher weight, more relevance to quadgrams
+    #return 100.0*quad_res/(weight+math.pow(len(set(list(text))),0.6)*math.pow(len(text),0.6))
+    return module.score(quad_res,text)
     
 def key_to_str(mydict):
   res=''
@@ -204,13 +202,6 @@ cipher_text = clean_input(ctext)
 log('cipher text:'+cipher_text)
 log(' ')
 
-# Number of hill climber restarts
-restarts = int(ARG_RESTARTS) # 300
-
-# hill climber #
-# stop after plateu consecutive iters w/o score increase
-plateau = 2000+math.sqrt(restarts)*20 
-
 
 log(' ')
 
@@ -220,10 +211,8 @@ plains=set(result['plain'])
 ''' https://en.wikipedia.org/wiki/Hill_climbing#Variants
  Random-restart hill climbing '''
 meta = []
-if ARG_MODULE=='score':
-  log(score_text(cipher_text.upper()))
-  sys.exit()
-elif ARG_MODULE=='simplesub':
+
+if ARG_MODULE=='simplesub':
   module=simplesub
 elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
@@ -233,6 +222,17 @@ elif ARG_MODULE=='syl':
   module=syl
 else:
   log("Unknown module "+ARG_MODULE)
+
+if ARG_RESTARTS=='score':
+  log(score_text(cipher_text.upper(),module))
+  sys.exit()
+  # Number of hill climber restarts
+  
+restarts = int(ARG_RESTARTS) # 300
+
+# hill climber #
+# stop after plateu consecutive iters w/o score increase
+plateau = 2000+math.sqrt(restarts)*20 
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
