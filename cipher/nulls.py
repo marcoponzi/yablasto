@@ -1,7 +1,7 @@
 import random
 import cipher.cipher_utils as cipher_utils
 import copy
-
+import math
 
     
 def init_key(cipher_text, plain_alphabet):
@@ -31,13 +31,14 @@ def change_key(key, cipher_text, plain_alphabet):
     
     diff=set(plain_alphabet)-set(key.values())
     
-    if len(diff)>0 and random.random()<.01: # replace with unused plain character
+    # 01:-15.912895838664767, .1:-16.1069
+    if len(diff)>0 and random.random()<.05: # replace with unused plain character
       #print("CHANGE")
       k=random.choice(klist)
-      #count=0
-      #while key[k]=='_': # and count<3: # preference for replacing nulls
+      #count=0 -3.0061
+      #while key[k]=='_' and count<2: # preference for replacing nulls
       #  k=random.choice(klist)
-      #count+=1
+      #  count+=1
       key[k]=random.choice(list(diff))
     elif list(key.values()).count('_')<len(key)/3 and random.random()<0.01: # add null
       k=random.choice(list(cipher_text))
@@ -60,4 +61,8 @@ def change_key(key, cipher_text, plain_alphabet):
       key[k2]=temp
 
     return cipher_utils.sort_dict(key)
+    
+def score(quad_score, plain_text):
+  # favor solutions resulting in longet text and more varied alphabet (fewer nulls)
+  return quad_score/(5+float(len(plain_text))/20.0+math.pow(len(set(plain_text)),1))
 
