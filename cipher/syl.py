@@ -1,7 +1,10 @@
 import random
 import cipher.cipher_utils as cipher_utils
 import copy
+import math
 
+# HOMOPHONIC (ONE TO MANY) CIPHER WHERE EACH CHARACTER IS ENCODED
+# AS A SHORT WORD, ROUGHLY CORRESPONDING TO A SYLLABLE
 
 ######
 def init_key(cipher_text, plain_alphabet):
@@ -43,4 +46,8 @@ def change_key(key, cipher_text, plain_alphabet):
         key[k2]=temp
 
     return cipher_utils.sort_dict(key)
+    
+def score(quad_score, plain_text):
+  # favor solutions that use more letters
+  return quad_score/math.pow(len(set(plain_text)),0.5)
 
