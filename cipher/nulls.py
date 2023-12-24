@@ -31,7 +31,7 @@ def change_key(key, cipher_text, plain_alphabet):
     
     diff=set(plain_alphabet)-set(key.values())
     
-    if len(diff)>0 and random.random()<.3: # replace with unused plain character
+    if len(diff)>0 and random.random()<.1: # replace with unused plain character
       #print("CHANGE")
       k=random.choice(klist)
       key[k]=random.choice(list(diff))
@@ -53,6 +53,7 @@ def change_key(key, cipher_text, plain_alphabet):
     return cipher_utils.sort_dict(key)
     
 def score(quad_score, plain_text):
+  weight=3 # higher weight, more relevance of quadgrams
   # favor solutions resulting in longer text and more varied alphabet (fewer nulls)
-  return quad_score/(3+math.pow(len(plain_text),0.5)+math.pow(len(set(plain_text)),0.6))
+  return quad_score/(weight+math.pow(len(plain_text),0.5)+math.pow(len(set(plain_text)),0.8))
 
