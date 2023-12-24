@@ -1,6 +1,7 @@
 import random
 import cipher.cipher_utils as cipher_utils
 import sys
+import math
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
@@ -67,4 +68,8 @@ def change_key(key, cipher_text, plain_alphabet):
     key[newkey]=temp
 
   return cipher_utils.sort_dict(key)
+  
+def score(quad_score, plain_text):
+  # favor solutions resulting in longer text
+  return quad_score/(20+float(len(plain_text)))
 
