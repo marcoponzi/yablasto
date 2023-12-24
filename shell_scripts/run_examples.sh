@@ -1,5 +1,5 @@
 
-RESTARTS=300
+RESTARTS=400
 
 echo 
 echo lat texts/examples/desine.lat.simple simplesub 50
