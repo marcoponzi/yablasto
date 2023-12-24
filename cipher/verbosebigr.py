@@ -71,5 +71,5 @@ def change_key(key, cipher_text, plain_alphabet):
   
 def score(quad_score, plain_text):
   # favor solutions resulting in longer text
-  return quad_score/(20+float(len(plain_text)))
+  return quad_score/(math.pow(len(plain_text),0.1))
 
