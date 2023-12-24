@@ -31,11 +31,11 @@ def change_key(key, cipher_text, plain_alphabet):
     
     diff=set(plain_alphabet)-set(key.values())
     
-    if len(diff)>0 and random.random()<.07: # replace with unused plain character
+    if len(diff)>0 and random.random()<.3: # replace with unused plain character
       #print("CHANGE")
       k=random.choice(klist)
       key[k]=random.choice(list(diff))
-    elif list(key.values()).count('_')<len(key)/3 and random.random()<0.01: # add null
+    elif list(key.values()).count('_')<len(key)/3 and random.random()<0.02: # add null
       k=random.choice(list(cipher_text))
       while key[k]=='_':
         k=random.choice(list(cipher_text))
@@ -54,5 +54,5 @@ def change_key(key, cipher_text, plain_alphabet):
     
 def score(quad_score, plain_text):
   # favor solutions resulting in longer text and more varied alphabet (fewer nulls)
-  return quad_score/(5+float(len(plain_text))/20.0+math.pow(len(set(plain_text)),1))
+  return quad_score/(3+math.pow(len(plain_text),0.5)+math.pow(len(set(plain_text)),0.6))
 
