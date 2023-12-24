@@ -31,14 +31,9 @@ def change_key(key, cipher_text, plain_alphabet):
     
     diff=set(plain_alphabet)-set(key.values())
     
-    # 01:-15.912895838664767, .1:-16.1069
-    if len(diff)>0 and random.random()<.05: # replace with unused plain character
+    if len(diff)>0 and random.random()<.07: # replace with unused plain character
       #print("CHANGE")
       k=random.choice(klist)
-      #count=0 -3.0061
-      #while key[k]=='_' and count<2: # preference for replacing nulls
-      #  k=random.choice(klist)
-      #  count+=1
       key[k]=random.choice(list(diff))
     elif list(key.values()).count('_')<len(key)/3 and random.random()<0.01: # add null
       k=random.choice(list(cipher_text))
@@ -48,12 +43,7 @@ def change_key(key, cipher_text, plain_alphabet):
     else: #swap two values
       k1=random.choice(list(cipher_text))
       count=0
-      #if key[k1]!='_' and count<2: # try to swap a null and a non-null
-      #  k1=random.choice(klist)
-      #  count+=1
       k2=random.choice(klist)
-      #if key[k2]!='_':
-      #  k2=random.choice(klist)
       while k2==k1 or key[k2]==key[k1]:
         k2=random.choice(klist)
       temp=key[k1]
