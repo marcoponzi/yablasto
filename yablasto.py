@@ -7,23 +7,29 @@ from math import log10
 from collections import Counter
 import itertools
 import string
+import datetime
 
-import decipher.simplesub as simplesub
-import decipher.verbosebigr as verbosebigr
-import decipher.nulls as nulls
-import decipher.syl as syl
-import decipher.decipher_utils as decipher_utils
+import cipher.simplesub as simplesub
+import cipher.verbosebigr as verbosebigr
+import cipher.nulls as nulls
+import cipher.syl as syl
+import cipher.cipher_utils as cipher_utils
 
-sys.path.insert(1, '/home/user/rec/voynich/python')
-sys.path.insert(2, 'decipher')
-from util import log, frmt
+sys.path.insert(2, 'cipher')
 
 
 # delay time in seconds
 sleep = 0
 
-# feed the ROTate result into hill climber, little benefit
-FEED = False
+def frmt(myfloat,dec=5):
+  # return "{:.5f}".format(myfloat)
+  formstr="{:."+str(dec)+"f}"
+  return formstr.format(myfloat)
+
+def log(msg):
+    time = datetime.datetime.now()
+    display_time = time.strftime("%H:%M:%S")
+    print("LOG:"+display_time+" "+str(msg))
 
 
 def loadfile(lang):
@@ -92,24 +98,11 @@ def clean_input(ciphertext):
     text = re.sub("[ \n]","",ciphertext)
     return text
 
-# TODO Delete
-def cached_score(cipher_text, key):
-  return score_text(decipher_utils.decrypt(cipher_text,key))
-  key_str=re.sub(" ","",key_to_str(key))
-  if key_str in score_cache.keys():
-    score = score_cache[key_str]
-    ##print("CACHED")
-  else:
-    if len(score_cache)>100000:
-      for k in list(score_cache.keys())[:10]:
-        del score_cache[k]
-    score=score_text(decipher_utils.decrypt(cipher_text,key))
-    score_cache[key_str]=score
-  return score
+
 
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
-    best_score = score_text(decipher_utils.decrypt(cipher_text,parent_key ))
+    best_score = score_text(cipher_utils.decrypt(cipher_text,parent_key ))
     ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
@@ -119,7 +112,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     consec_fails = 0
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
-        child_score = score_text(decipher_utils.decrypt(cipher_text,child_key ))
+        child_score = score_text(cipher_utils.decrypt(cipher_text,child_key ))
         if (child_score > best_score):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
@@ -146,7 +139,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     log("curr_parent: "+str(parent_score)+" "+key_to_str(parent_key))
     result=dict()
     result['key'] = best_key
-    result['plain'] = decipher_utils.decrypt(cipher_text, best_key)
+    result['plain'] = cipher_utils.decrypt(cipher_text, best_key)
     result['score'] = best_score
     return result
 
@@ -197,7 +190,7 @@ best_res['key']=dict()
 
 ARG_LANG=sys.argv[1]
 ARG_CTEXT_FILE=sys.argv[2]
-ARG_DECIPHER=sys.argv[3]
+ARG_MODULE=sys.argv[3]
 ARG_RESTARTS=sys.argv[4]
 ctext=''
 with open(ARG_CTEXT_FILE, "r") as infile:
@@ -227,19 +220,19 @@ plains=set(result['plain'])
 ''' https://en.wikipedia.org/wiki/Hill_climbing#Variants
  Random-restart hill climbing '''
 meta = []
-if ARG_DECIPHER=='score':
+if ARG_MODULE=='score':
   log(score_text(cipher_text.upper()))
   sys.exit()
-elif ARG_DECIPHER=='simplesub':
+elif ARG_MODULE=='simplesub':
   module=simplesub
-elif ARG_DECIPHER=='verbosebigr':
+elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
-elif ARG_DECIPHER=='nulls':
+elif ARG_MODULE=='nulls':
   module=nulls
-elif ARG_DECIPHER=='syl':
+elif ARG_MODULE=='syl':
   module=syl
 else:
-  log("Unknown module "+ARG_DECIPHER)
+  log("Unknown module "+ARG_MODULE)
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts

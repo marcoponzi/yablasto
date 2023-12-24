@@ -1,5 +1,5 @@
 import random
-import decipher.decipher_utils as decipher_utils
+import cipher.cipher_utils as cipher_utils
 import sys
 
 # return a character or bigram
@@ -40,7 +40,7 @@ def init_key(cipher_text, plain_alphabet):
       cipher_bit=rand_cipher_bit(key,cipher_text, plain_alphabet)
       key[cipher_bit]=char
     
-    return decipher_utils.sort_dict(key)
+    return cipher_utils.sort_dict(key)
 
 ######
 ''' swap 2 letters '''
@@ -66,5 +66,5 @@ def change_key(key, cipher_text, plain_alphabet):
     del key[k]
     key[newkey]=temp
 
-  return decipher_utils.sort_dict(key)
+  return cipher_utils.sort_dict(key)
 

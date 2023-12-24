@@ -1,5 +1,5 @@
 import random
-import decipher.decipher_utils as decipher_utils
+import cipher.cipher_utils as cipher_utils
 import copy
 
 
@@ -21,7 +21,7 @@ def init_key(cipher_text, plain_alphabet):
         plain_char=random.choice(unused)
         unused.remove(plain_char)
       key[cipher_char]=plain_char
-    return decipher_utils.sort_dict(key)
+    return cipher_utils.sort_dict(key)
 
 ######
 # change a single plain character
@@ -59,5 +59,5 @@ def change_key(key, cipher_text, plain_alphabet):
       key[k1]=key[k2]
       key[k2]=temp
 
-    return decipher_utils.sort_dict(key)
+    return cipher_utils.sort_dict(key)
 

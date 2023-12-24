@@ -1,12 +1,13 @@
 import random
-import decipher.decipher_utils as decipher_utils
+import cipher.cipher_utils as cipher_utils
 import copy
 
 
 ######
 def init_key(cipher_text, plain_alphabet):
     key=dict()
-    cipher_alphabet=sorted(list(set(list(cipher_text))))
+    cipher_alphabet=sorted(list(set(cipher_text.split('_'))))
+    cipher_alphabet=[i for i in cipher_alphabet if i!= '']
     unused=copy.deepcopy(plain_alphabet)
     for cipher_char in cipher_alphabet:
       if len(unused)>0:
@@ -16,7 +17,7 @@ def init_key(cipher_text, plain_alphabet):
         # repeated plain characters, if cipher_alphabet is too large
         plain_char=random.choice(plain_alphabet)
       key[cipher_char]=plain_char
-    return decipher_utils.sort_dict(key)
+    return cipher_utils.sort_dict(key)
 
 ######
 # change a single plain character
@@ -25,19 +26,21 @@ def change_key(key, cipher_text, plain_alphabet):
     klist=list(key.keys())
     cipher_alphabet=sorted(list(set(list(cipher_text))))
     
-    # plain_alphabet larger than cipher_alphabet?
     diff=set(plain_alphabet)-set(key.values())
     
-    if len(diff)>0 and random.random()>.2: #pick unused plain character
+    if len(diff)>len(plain_alphabet)/3 or (len(diff)>0 and random.random()<.2): #pick unused plain character 9.18 .1
       key[random.choice(klist)]=random.choice(list(diff))
-    else: #swap two values
+    else: 
       k1=random.choice(klist)
       k2=random.choice(klist)
-      while k2==k1 or key[k2]==key[k1]:
+      while key[k2]==key[k1]:
         k2=random.choice(klist)
-      temp=key[k1]
-      key[k1]=key[k2]
-      key[k2]=temp
+      if random.random()<.1: # duplicate value
+        key[k1]=key[k2] 
+      else: #swap two values
+        temp=key[k1]
+        key[k1]=key[k2]
+        key[k2]=temp
 
-    return decipher_utils.sort_dict(key)
+    return cipher_utils.sort_dict(key)
 
