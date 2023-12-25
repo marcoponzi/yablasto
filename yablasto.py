@@ -13,7 +13,7 @@ import cipher.simplesub as simplesub
 import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
 import cipher.syl as syl
-import cipher.cipher_utils as cipher_utils
+#import cipher.cipher_utils as cipher_utils
 
 sys.path.insert(2, 'cipher')
 
@@ -102,7 +102,7 @@ def clean_input(ciphertext):
 
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
-    best_score = score_text(cipher_utils.decrypt(cipher_text,parent_key ), module)
+    best_score = score_text(decrypt(cipher_text,parent_key ), module)
     ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
@@ -112,7 +112,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     consec_fails = 0
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
-        child_score = score_text(cipher_utils.decrypt(cipher_text,child_key ), module)
+        child_score = score_text(decrypt(cipher_text,child_key ), module)
         if (child_score > best_score):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
@@ -139,10 +139,19 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     log("curr_parent: "+str(parent_score)+" "+key_to_str(parent_key))
     result=dict()
     result['key'] = best_key
-    result['plain'] = cipher_utils.decrypt(cipher_text, best_key)
+    result['plain'] = decrypt(cipher_text, best_key)
     result['score'] = best_score
     return result
 
+
+# key is a map: key:cipher-symbol, val:plain-text symbol
+#  sorted by decreasing key length
+def decrypt(cipher_text, key):
+    plain=cipher_text
+    for cipher_bit in key.keys():
+      plain=re.sub(cipher_bit, key[cipher_bit],plain)
+    plain = re.sub('_', '',plain) # remove nulls
+    return plain
 
 
 #####################
@@ -165,9 +174,7 @@ def score_text(text, module):
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
     quad_res=score/float(len(text)-3)
-    # favor longer decipherments with more varied alphabets
-    #weight=15 # heigher weight, more relevance to quadgrams
-    #return 100.0*quad_res/(weight+math.pow(len(set(list(text))),0.6)*math.pow(len(text),0.6))
+
     return module.score(quad_res,text)
     
 def key_to_str(mydict):
