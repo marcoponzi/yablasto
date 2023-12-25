@@ -12,8 +12,8 @@ time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.sy
 cat tmp/out.syl | tail -10
 
 echo
-echo eng texts/examples/letthewaters.eng.nulls nulls $RESTARTS
-time python3.6 yablasto.py eng texts/examples/letthewaters.eng.nulls nulls  $RESTARTS  > tmp/out.nulls
+echo eng eng texts/examples/thesearethegenerations_long.eng.nulls nulls $RESTARTS
+time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.nulls nulls  $RESTARTS  > tmp/out.nulls
 cat tmp/out.nulls | tail -10
 
 echo 
