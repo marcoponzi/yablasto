@@ -9,6 +9,8 @@ import itertools
 import string
 import datetime
 
+from split_into_words import word_break_with_gaps
+
 import cipher.simplesub as simplesub
 import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
@@ -32,13 +34,25 @@ def log(msg):
     print("LOG:"+display_time+" "+str(msg))
 
 
-def loadfile(lang):
+def load_quadgrams(lang):
     store = []
-    with open("quadgrams/"+lang+".quadgrams", "r") as infile:
+    with open("languages/"+lang+".quadgrams", "r") as infile:
         for line in infile:
             qgramz = line.split("\n")[0]
             store.append( qgramz )
     return store
+    
+def load_lexicon(lang, min_word_len, max_words):
+    words=list()
+    longest_word=''
+    with open("languages/"+lang+".lexicon", "r") as infile:
+        for line in infile: #remove counts, if present
+            word=re.sub(" .*","",line.split("\n")[0]).upper()
+            if len(word)>=min_word_len and len(words)<max_words:
+              words.append(word)
+              if len(word)>len(longest_word):
+                longest_word=word
+    return words, longest_word
 
 
 def parse_qgram(lang):
@@ -46,7 +60,7 @@ def parse_qgram(lang):
     ngrams = {}
     plain_alphabet=set()
     qtot = 0
-    txt = loadfile(lang)
+    txt = load_quadgrams(lang)
     for line in txt:
         tmp = line.split(' ')
         qgm_count = int(tmp[1])
@@ -272,10 +286,25 @@ meta.sort()
 for i in meta:
     log(i)
 log(' ')
+meta=''
+qgram=''
 
+best_plain=best_res['plain']
 
+lexicon, longest_word=load_lexicon(ARG_LANG,3,20000)
+print(lexicon[:10])
 
+gaps,split_words=word_break_with_gaps(best_plain,lexicon)
+print(str(gaps)+" "+str(split_words))
 
+longest_found=''
+for w in split_words:
+  if w[0]!='<' and len(w)>len(longest_found):
+    longest_found=w
+print(longest_found+" "+longest_word)
+    
+print("covered%: "+frmt((len(best_plain)-gaps)/len(best_plain)))
+print("max_word_len%: "+frmt(len(longest_found)/len(longest_word)))
 
 
 
