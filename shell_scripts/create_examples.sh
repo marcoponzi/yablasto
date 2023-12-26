@@ -1,5 +1,5 @@
 
-for f in `ls -1 ../texts/examples/*.lat` `ls -1 ../texts/examples/*.eng`
+for f in `ls -1 ../texts/examples/*.lat` `ls -1 ../texts/examples/*.eng` `ls -1 ../texts/examples/*.ita`
 do
 echo $f
 cat $f | source encode_simplesub.sh > $f'.'simple
