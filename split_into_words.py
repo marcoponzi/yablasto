@@ -14,26 +14,24 @@ def word_break_with_gaps(s, word_list):
             if s[str_start:str_end] in word_set:
                 total_gaps, words = dp[closest_index]
                 new_gaps = total_gaps + (str_start -closest_index)  # Count gaps if not at the beginning
-                if dp[str_end] is None or (dp[str_end][0]>=new_gaps):
+                # longer words are found first, "rainbow" is preferred to "rain" "bow"
+                if dp[str_end] is None or (dp[str_end][0]>new_gaps): 
                   dp[str_end] = (new_gaps, words + [s[str_start:str_end]])
                   #print(" WORD str_end:"+str(str_end)+" "+str(dp[str_end]))
             else:                
                 total_gaps, words = dp[closest_index]
                 new_gaps=total_gaps+str_end-closest_index
                 if dp[str_end] is None or (dp[str_end][0]>new_gaps): 
-                  if len(words)==0 or words[len(words)-1]!='|':
-                    dp[str_end] = (new_gaps, words+['|'])
-                  else:
-                    dp[str_end] = (new_gaps, words)
-                  #print(" GAP str_end:"+str(str_end)+" "+str(dp[str_end]))
+                  gap_str='<'+s[closest_index:str_end]+'>'
+                  dp[str_end] = (new_gaps, words+[ gap_str ])
 
     return dp[n]
 
 # Example usage:
 
-word_list = word_list = ["the", "seal", "pear", "these", "all","light"]
+word_list = word_list = ["the", "seal", "pear", "these", "all","light", "rainbow", "rain", "bow"]
 for input_string in ["theseal","theXXseal","XXtheXXseal", "theXXsealX", "theseall",\
-   "XtheseallX","theseallight","thesealight", "lightheseal", "lightXXseal"]:
+   "XtheseallX","theseallight","thesealight", "lightheseal", "lightXXseal", "rainbow"]:
 #for input_string in ["lightheseal"]:
   print(" ")
   print("input_string:", input_string)
