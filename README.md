@@ -4,6 +4,10 @@ based on blasto by Merricx https://github.com/Merricx/blasto
 
 based on blasto_mini by user RobGea on this forum: https://www.voynich.ninja/thread-3637-post-52342.html#pid52342
 
+Source of English lexicon:
+
+https://gist.github.com/h3xx/1976236
+
 
 lower case plain text converted to upper case cipher:
 
