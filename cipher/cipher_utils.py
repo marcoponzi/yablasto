@@ -13,3 +13,11 @@ def sort_dict(indict):
     new_d[k] = indict[k]
 
   return new_d
+  
+def load_crib(fname):
+    words=list()
+    with open("texts/examples/"+fname, "r") as infile:
+        for line in infile:
+            w = line.split("\n")[0]
+            words.append( w.upper() )
+    return words

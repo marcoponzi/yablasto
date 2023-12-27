@@ -14,8 +14,11 @@ from split_into_words import word_break_with_gaps
 import cipher.simplesub as simplesub
 import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
+import cipher.crib as crib
 import cipher.syl as syl
 #import cipher.cipher_utils as cipher_utils
+
+import importlib
 
 sys.path.insert(2, 'cipher')
 
@@ -45,14 +48,16 @@ def load_quadgrams(lang):
 def load_lexicon(lang, min_word_len, max_words):
     words=list()
     longest_word=''
+    tot_chars=0
     with open("languages/"+lang+".lexicon", "r") as infile:
         for line in infile: #remove counts, if present
             word=re.sub(" .*","",line.split("\n")[0]).upper()
             if len(word)>=min_word_len and len(words)<max_words:
               words.append(word)
+              tot_chars+=len(word)
               if len(word)>len(longest_word):
                 longest_word=word
-    return words, longest_word
+    return words, longest_word, float(tot_chars)/float(len(words))
 
 
 def parse_qgram(lang):
@@ -137,8 +142,10 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
         else:
           consec_fails  += 1
 
-        # accept child_key if the new score is better or only marginally worse
-        if (child_score < best_score) and (child_score/best_score)<(1.19-(perc_progress*perc_progress*perc_progress)/5):
+          # accept child_key if the new score is better or only marginally worse
+          # print(str(best_score) + ' - ' + str(child_score))
+          # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
+          if (child_score < best_score) and abs((best_score-child_score)/best_score)<(0.195-(perc_progress*perc_progress)/5):
             ## log("child worse: "+str(child_score)+" best: "+str(best_score))
             parent_score=child_score
             parent_key = child_key
@@ -211,6 +218,7 @@ ARG_LANG=sys.argv[1]
 ARG_CTEXT_FILE=sys.argv[2]
 ARG_MODULE=sys.argv[3]
 ARG_RESTARTS=sys.argv[4]
+CRIB_MODULE=''
 ctext=''
 with open(ARG_CTEXT_FILE, "r") as infile:
   for line in infile:
@@ -239,6 +247,13 @@ elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
 elif ARG_MODULE=='nulls':
   module=nulls
+elif ARG_MODULE.startswith('crib_'):
+  module=crib
+  crib_module=importlib.import_module("cipher."+re.sub("crib_","",ARG_MODULE))
+  log('CRIB_MODULE '+str(crib_module))
+
+  print('OK')
+  crib.set_module(crib_module, ARG_CTEXT_FILE, ARG_LANG)
 elif ARG_MODULE=='syl':
   module=syl
 else:
@@ -291,20 +306,28 @@ qgram=''
 
 best_plain=best_res['plain']
 
-lexicon, longest_word=load_lexicon(ARG_LANG,3,20000)
+lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,3,20000)
 print(lexicon[:10])
 
 gaps,split_words=word_break_with_gaps(best_plain,lexicon)
 print(str(gaps)+" "+str(split_words))
 
 longest_found=''
+tot_chars=0
+count_words=0
 for w in split_words:
-  if w[0]!='<' and len(w)>len(longest_found):
-    longest_found=w
+  if w[0]!='<' :
+    tot_chars+=len(w)
+    count_words+=1
+    if len(w)>len(longest_found):
+      longest_found=w
+avg_len=float(tot_chars)/float(count_words)
 print(longest_found+" "+longest_word)
-    
+print("averge_len lexicon:"+frmt(lexicon_avg_len)+" deciphered:"+frmt(avg_len))  
+  
 print("covered%: "+frmt((len(best_plain)-gaps)/len(best_plain)))
 print("max_word_len%: "+frmt(len(longest_found)/len(longest_word)))
+print("avg_word_len%: "+frmt(float(avg_len)/float(lexicon_avg_len)))
 
 
 
