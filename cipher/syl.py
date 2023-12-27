@@ -48,6 +48,7 @@ def change_key(key, cipher_text, plain_alphabet):
     return cipher_utils.sort_dict(key)
     
 def score(quad_score, plain_text):
-  # favor solutions that use more letters
-  return quad_score/math.pow(len(set(plain_text)),0.5)
+  weight=1 # higher weight, more relevance of quadgrams
+  # favor solutions resulting in more varied alphabet
+  return quad_score/(weight+math.pow(len(set(plain_text)),0.7))
 
