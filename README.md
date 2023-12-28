@@ -9,10 +9,6 @@ Source of English lexicon:
 https://gist.github.com/h3xx/1976236
 
 
-lower case plain text converted to upper case cipher:
-
-cat slowbrowncat.eng | source encode_simple_sub.sh 
-
 quadgrams/lat.uv.quadgrams: U replaced with V; rare characters K and W removed
 
 quadgrams/lat.uv.e.quadgrams: OE and AE replaced with E (before removing spaces)
