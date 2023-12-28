@@ -59,5 +59,5 @@ def score(quad_score, plain_text):
           found=True
           found_parts+=1
           
-  return 1.5*trigrams + found_parts+ 2*found_words + orig_score
+  return 1*trigrams + found_parts+ 3*found_words + orig_score
 
