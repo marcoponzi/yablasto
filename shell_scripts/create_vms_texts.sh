@@ -32,7 +32,7 @@ cat ../texts/vms/$p'.eva' | sed -f gheuens_verbose.sed > ../texts/vms/$p'.gheuen
 cat ../texts/vms/$p'.feaster' | sed -f more_spaces.sed | tr ' ' '_' > ../texts/vms/$p'.syl'
 done
 
-for f in ../texts/vms/*eva ../texts/vms/*cuva ../texts/vms/*bg ../texts/vms/*syl
+for f in ../texts/vms/*eva ../texts/vms/*cuva ../texts/vms/*bg ../texts/vms/*gheuens ../texts/vms/*syl
 do
 cat $f | tr '\n' '#' | grep -o . | tac | tr -d '\n' | tr '#' '\n' > $f'.rev'
 done
