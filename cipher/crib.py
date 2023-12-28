@@ -20,15 +20,11 @@ this = sys.modules[__name__]
 this.crib_module = None
 this.CRIB = None
 
-def set_module(m, ctext, lang):
+def set_module(m, crib_text, lang):
   #global  crib_module
   print(m)
   this.crib_module=m
-  fname=re.sub(".*/","",ctext)
-  if fname.startswith('zod'):
-      this.CRIB=cipher_utils.load_crib('zodiac.'+lang)
-  else:
-      this.CRIB=[]
+  this.CRIB=cipher_utils.load_crib(crib_text+'.'+lang)
   print("CRIB "+str(this.CRIB))
 
 ######
@@ -63,5 +59,5 @@ def score(quad_score, plain_text):
           found=True
           found_parts+=1
           
-  return trigrams + found_parts+ 2*found_words + orig_score
+  return 1.5*trigrams + found_parts+ 2*found_words + orig_score
 
