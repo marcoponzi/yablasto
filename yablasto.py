@@ -146,7 +146,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # print(str(best_score) + ' - ' + str(child_score))
           # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
           if best_score!=0 and (child_score < best_score) and \
-             abs((best_score-child_score)/best_score)<(0.195-(perc_progress*perc_progress)/5):
+             abs((best_score-child_score)/best_score)<(0.195-(perc_progress*perc_progress*perc_progress)/5):
             ## log("child worse: "+str(child_score)+" best: "+str(best_score))
             parent_score=child_score
             parent_key = child_key
