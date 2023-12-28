@@ -145,7 +145,8 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # accept child_key if the new score is better or only marginally worse
           # print(str(best_score) + ' - ' + str(child_score))
           # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
-          if (child_score < best_score) and abs((best_score-child_score)/best_score)<(0.195-(perc_progress*perc_progress)/5):
+          if best_score!=0 and (child_score < best_score) and \
+             abs((best_score-child_score)/best_score)<(0.195-(perc_progress*perc_progress)/5):
             ## log("child worse: "+str(child_score)+" best: "+str(best_score))
             parent_score=child_score
             parent_key = child_key
@@ -249,11 +250,11 @@ elif ARG_MODULE=='nulls':
   module=nulls
 elif ARG_MODULE.startswith('crib_'):
   module=crib
-  crib_module=importlib.import_module("cipher."+re.sub("crib_","",ARG_MODULE))
+  ignore,crib_text,module_name=ARG_MODULE.split('_')
+  log(crib_text)
+  crib_module=importlib.import_module("cipher."+module_name)
   log('CRIB_MODULE '+str(crib_module))
-
-  print('OK')
-  crib.set_module(crib_module, ARG_CTEXT_FILE, ARG_LANG)
+  crib.set_module(crib_module, crib_text, ARG_LANG)
 elif ARG_MODULE=='syl':
   module=syl
 else:
@@ -307,7 +308,7 @@ qgram=''
 best_plain=best_res['plain']
 
 lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,3,20000)
-print(lexicon[:10])
+##print(lexicon[:10])
 
 gaps,split_words=word_break_with_gaps(best_plain,lexicon)
 print(str(gaps)+" "+str(split_words))
@@ -324,10 +325,14 @@ for w in split_words:
 avg_len=float(tot_chars)/float(count_words)
 print(longest_found+" "+longest_word)
 print("averge_len lexicon:"+frmt(lexicon_avg_len)+" deciphered:"+frmt(avg_len))  
-  
-print("covered%: "+frmt((len(best_plain)-gaps)/len(best_plain)))
-print("max_word_len%: "+frmt(len(longest_found)/len(longest_word)))
-print("avg_word_len%: "+frmt(float(avg_len)/float(lexicon_avg_len)))
+
+perc_covered=(len(best_plain)-gaps)/len(best_plain)
+perc_max_len=len(longest_found)/len(longest_word)
+perc_avg_len=float(avg_len)/float(lexicon_avg_len)
+print("covered%: "+frmt(perc_covered))
+print("max_word_len%: "+frmt(perc_max_len))
+print("avg_word_len%: "+frmt(perc_avg_len))
+print("FINAL%: "+frmt(perc_covered*(perc_max_len+perc_avg_len)/2.0))
 
 
 
