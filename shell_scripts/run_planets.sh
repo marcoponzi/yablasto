@@ -1,4 +1,4 @@
-RESTARTS=200
+RESTARTS=300
 
 for lang in ita.uv lat.uv #ita lat 
 do
@@ -7,7 +7,7 @@ do
   f=texts/vms/$fname
 
   crib=crib_planets
-  for encoding in cuva bg eva cuva.rev bg.rev eva.rev
+  for encoding in cuva bg eva gheuens cuva.rev bg.rev eva.rev gheuens.rev
   do
   for method in simplesub nulls verbosebigr
   do
