@@ -20,4 +20,4 @@ def load_crib(fname):
         for line in infile:
             w = line.split("\n")[0]
             words.append( w.upper() )
-    return words
+    return sorted(sorted(words), key=len, reverse=True)

@@ -121,7 +121,7 @@ def clean_input(ciphertext):
 
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
-    best_score = score_text(decrypt(cipher_text,parent_key ), module)
+    best_score, ignore = score_text(decrypt(cipher_text,parent_key ), module)
     ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
@@ -131,7 +131,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     consec_fails = 0
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
-        child_score = score_text(decrypt(cipher_text,child_key ), module)
+        child_score, ignore = score_text(decrypt(cipher_text,child_key ), module)
         if (child_score > best_score):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
@@ -195,9 +195,9 @@ def score_text(text, module):
         temp[3] = alpha.find(text[i+3])
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
-    quad_res=score/float(len(text)-3)
+    quad_score=score/float(len(text)-3)
 
-    return module.score(quad_res,text)
+    return module.score(quad_score,text),quad_score
     
 def key_to_str(mydict):
   res=''
@@ -261,7 +261,8 @@ else:
   log("Unknown module "+ARG_MODULE)
 
 if ARG_RESTARTS=='score':
-  log(score_text(cipher_text.upper(),module))
+  tot_score, quad_score=score_text(cipher_text.upper(),module)
+  print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
   sys.exit()
   # Number of hill climber restarts
   
@@ -307,7 +308,7 @@ qgram=''
 
 best_plain=best_res['plain']
 
-lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,3,20000)
+lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,20000)
 ##print(lexicon[:10])
 
 gaps,split_words=word_break_with_gaps(best_plain,lexicon)

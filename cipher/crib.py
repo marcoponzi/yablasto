@@ -42,22 +42,54 @@ def init_key(cipher_text, plain_alphabet):
 def change_key(key, cipher_text, plain_alphabet):
   return crib_module.change_key(key, cipher_text, plain_alphabet)
   
+def ngram_found(ngram,plain_text,N,start,end,to_remove):
+  index=plain_text.index(ngram)
+  if start<0 or index>end: # not overlapping
+    if start>=0:
+      to_remove.append([start,end])
+    start=index
+    end=index+N
+  elif index+N>end: #match is further right than previous match
+    end=index+N
+  ## print(ngram+" "+str(start)+" "+str(end))
+  return start,end,to_remove
+  
 def score(quad_score, plain_text):
   orig_score=crib_module.score(quad_score, plain_text)
-  trigrams=0
+  ngrams=0
+  N=2 # trigrams
   found_words=0
   found_parts=0
-  for w in this.CRIB:
+  for w in this.CRIB: # find and remove whole words
     if w in plain_text:
+        ## print("foundWord: "+w)
         found_words+=1
+        ngrams+=len(w)
+        plain_text=plain_text.replace(w,'')
+
+  for w in this.CRIB:    
+    to_remove=list()  
     found=False
-    for i in range(0,len(w)-2):
-      # print(w+" "+w[i:i+3])
-      if w[i:i+2] in plain_text:
-        trigrams+=1
+    start,end=-9999,-9999
+    for i in range(0,len(w)-N+1):
+      ## print(w[i:i+N])
+      if w[i:i+N] in plain_text:
+        start,end,to_remove=ngram_found(w[i:i+N],plain_text,N,start,end,to_remove)
+        ngrams+=1
+        ##print(w[i:i+N]+" "+str(ngrams))
         if not found:
           found=True
           found_parts+=1
+    if start>=0:
+      ##print("adding: "+str([start,end]))
+      to_remove.append([start,end])
+    to_remove.reverse()
+    for start,end in to_remove:
+      ## print("to_remove: "+str(to_remove)+" "+plain_text)
+      plain_text=plain_text[0:start]+plain_text[end:len(plain_text)]
+      ## print("removed: "+plain_text)
           
-  return 1*trigrams + found_parts+ 3*found_words + orig_score
+  #return 2*ngrams + found_parts+ 3*found_words + orig_score
+  ##print("ngrams: "+str(ngrams)+" parts: "+str(found_parts)+" words: "+str(found_words))
+  return orig_score/(1+ngrams + 0*found_parts+ 3*found_words)
 
