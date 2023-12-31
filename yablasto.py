@@ -308,7 +308,7 @@ qgram=''
 
 best_plain=best_res['plain']
 
-lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,20000)
+lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)
 ##print(lexicon[:10])
 
 gaps,split_words=word_break_with_gaps(best_plain,lexicon)
