@@ -57,19 +57,17 @@ def ngram_found(ngram,plain_text,N,start,end,to_remove):
 def score(quad_score, plain_text):
   orig_score=crib_module.score(quad_score, plain_text)
   ngrams=0
-  N=2 # trigrams
-  found_words=0
-  found_parts=0
+  N=3 # 3=trigrams, 2=bigrams
+  found_words=list()
   for w in this.CRIB: # find and remove whole words
     if w in plain_text:
         ## print("foundWord: "+w)
-        found_words+=1
+        found_words.append(w)
         ngrams+=len(w)
         plain_text=plain_text.replace(w,'')
 
   for w in this.CRIB:    
     to_remove=list()  
-    found=False
     start,end=-9999,-9999
     for i in range(0,len(w)-N+1):
       ## print(w[i:i+N])
@@ -77,9 +75,6 @@ def score(quad_score, plain_text):
         start,end,to_remove=ngram_found(w[i:i+N],plain_text,N,start,end,to_remove)
         ngrams+=1
         ##print(w[i:i+N]+" "+str(ngrams))
-        if not found:
-          found=True
-          found_parts+=1
     if start>=0:
       ##print("adding: "+str([start,end]))
       to_remove.append([start,end])
@@ -90,6 +85,6 @@ def score(quad_score, plain_text):
       ## print("removed: "+plain_text)
           
   #return 2*ngrams + found_parts+ 3*found_words + orig_score
-  ##print("ngrams: "+str(ngrams)+" parts: "+str(found_parts)+" words: "+str(found_words))
-  return orig_score/(1+ngrams + 0*found_parts+ 3*found_words)
+  #print("ngrams: "+str(ngrams)+" words: "+str(found_words))
+  return 1000.0*orig_score/(0.1+1*ngrams*ngrams +3*len(found_words)*len(''.join(found_words)))
 
