@@ -14,6 +14,7 @@ from split_into_words import word_break_with_gaps
 import cipher.simplesub as simplesub
 import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
+import cipher.verbosenulls as verbosenulls
 import cipher.crib as crib
 import cipher.syl as syl
 #import cipher.cipher_utils as cipher_utils
@@ -246,6 +247,8 @@ if ARG_MODULE=='simplesub':
   module=simplesub
 elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
+elif ARG_MODULE=='verbosenulls':
+  module=verbosenulls
 elif ARG_MODULE=='nulls':
   module=nulls
 elif ARG_MODULE.startswith('crib_'):
@@ -275,7 +278,7 @@ plateau = 2000+math.sqrt(restarts)*20
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
      #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
-     if len(best_res['key'])==0 or random.random()>(math.sqrt(perc_progress)*1.2): 
+     if perc_progress<=.1 or random.random()>(math.sqrt(perc_progress)*1.2): # len(best_res['key'])==0
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
         log("RAND KEY "+key_to_str(parent_key))
@@ -303,10 +306,11 @@ meta.sort()
 for i in meta:
     log(i)
 log(' ')
-meta=''
-qgram=''
 
 best_plain=best_res['plain']
+log("best_plain: "+str(best_plain))
+tot_score, quad_score=score_text(best_plain,module)
+print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
 
 lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)
 ##print(lexicon[:10])
