@@ -23,7 +23,7 @@ cat tmp/out.nulls | tail -10
 
 echo 
 echo eng.uv texts/examples/thesearethegenerations_long.eng.verbosebigr verbosebigr $RESTARTS
-time python3.6 yablasto.py eng.uv texts/examples/thesearethegenerations_long.eng.verbosebigr verbosebigr $RESTARTS
+time python3.6 yablasto.py eng.uv texts/examples/thesearethegenerations_long.eng.verbosebigr verbosebigr $RESTARTS > out.verbosebigr
 cat tmp/out.verbosebigr | tail -10
 
 
