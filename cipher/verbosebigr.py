@@ -8,14 +8,10 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet):
       text_list=list(cipher_text)
       cipher_bit=''
       rand=random.random()
-      if rand>.9:
-        cipher_bit=random.choice(plain_alphabet).lower()
-        if cipher_bit in key.keys():
-          cipher_bit=''
-      elif cipher_bit=='' or rand >.5: # character
+      if rand >.4: # character
         cipher_bit=random.choice(text_list)
         count=0
-        while cipher_bit in key.keys() and count<1000:
+        while cipher_bit in key.keys() and count<100:
           cipher_bit=random.choice(text_list)
           count+=1
         if cipher_bit in key.keys():

@@ -9,12 +9,13 @@ import itertools
 import string
 import datetime
 
-from split_into_words import word_break_with_gaps
+#from split_into_words import word_break_with_gaps
 
 import cipher.simplesub as simplesub
 import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
 import cipher.verbosenulls as verbosenulls
+import cipher.cipher_utils as cipher_utils
 import cipher.crib as crib
 import cipher.syl as syl
 #import cipher.cipher_utils as cipher_utils
@@ -46,7 +47,7 @@ def load_quadgrams(lang):
             store.append( qgramz )
     return store
     
-def load_lexicon(lang, min_word_len, max_words):
+def load_lexicon(lang, min_word_len=4, max_words=5000): #4 15000
     words=list()
     longest_word=''
     tot_chars=0
@@ -206,6 +207,7 @@ def key_to_str(mydict):
     res+=str(k)+":"+str(mydict[k])+" "
   return res
 
+
 #############################################
 #Initial variables
 result = {'key':'','plain':'','score':''}
@@ -249,6 +251,8 @@ elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
 elif ARG_MODULE=='verbosenulls':
   module=verbosenulls
+  lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+  module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='nulls':
   module=nulls
 elif ARG_MODULE.startswith('crib_'):
@@ -264,6 +268,9 @@ else:
   log("Unknown module "+ARG_MODULE)
 
 if ARG_RESTARTS=='score':
+
+  lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+  cipher_utils.evaluate_by_lexicon(cipher_text.upper(), lexicon, longest_word, lexicon_avg_len, True)
   tot_score, quad_score=score_text(cipher_text.upper(),module)
   print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
   sys.exit()
@@ -273,12 +280,12 @@ restarts = int(ARG_RESTARTS) # 300
 
 # hill climber #
 # stop after plateu consecutive iters w/o score increase
-plateau = 2000+math.sqrt(restarts)*20 
+plateau = 100+restarts*10 #math.sqrt(restarts)*10 
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
      #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
-     if perc_progress<=.1 or random.random()>(math.sqrt(perc_progress)*1.2): # len(best_res['key'])==0
+     if perc_progress<=.1 or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
         log("RAND KEY "+key_to_str(parent_key))
@@ -309,35 +316,13 @@ log(' ')
 
 best_plain=best_res['plain']
 log("best_plain: "+str(best_plain))
+lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+cipher_utils.evaluate_by_lexicon(best_plain, lexicon, longest_word, lexicon_avg_len, True)
 tot_score, quad_score=score_text(best_plain,module)
 print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
 
-lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)
-##print(lexicon[:10])
 
-gaps,split_words=word_break_with_gaps(best_plain,lexicon)
-print(str(gaps)+" "+str(split_words))
 
-longest_found=''
-tot_chars=0
-count_words=0
-for w in split_words:
-  if w[0]!='<' :
-    tot_chars+=len(w)
-    count_words+=1
-    if len(w)>len(longest_found):
-      longest_found=w
-avg_len=float(tot_chars)/float(count_words)
-print(longest_found+" "+longest_word)
-print("averge_len lexicon:"+frmt(lexicon_avg_len)+" deciphered:"+frmt(avg_len))  
-
-perc_covered=(len(best_plain)-gaps)/len(best_plain)
-perc_max_len=len(longest_found)/len(longest_word)
-perc_avg_len=float(avg_len)/float(lexicon_avg_len)
-print("covered%: "+frmt(perc_covered))
-print("max_word_len%: "+frmt(perc_max_len))
-print("avg_word_len%: "+frmt(perc_avg_len))
-print("FINAL%: "+frmt(perc_covered*(perc_max_len+perc_avg_len)/2.0))
 
 
 
