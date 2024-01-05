@@ -10,6 +10,7 @@ do
 cat $f | source encode_simplesub.sh > $f'.'simplesub
 cat $f | sed -e 's/\(.\)\1/\1/g' > $f'.no2'
 cat $f | source encode_verbosebigr.sh > $f'.'verbosebigr
+cat $f | source encode_verbosenulls.sh > $f'.'verbosenulls
 cat $f | source encode_nulls.sh > $f'.'nulls
 cat $f | source encode_syl.sh > $f'.'syl
 done

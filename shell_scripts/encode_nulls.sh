@@ -1,4 +1,4 @@
-source encode_simplesub.sh > tmp/simple
+source encode_simplesub.sh | tr '\n' ' ' > tmp/simple
 cp tmp/simple tmp/nulls
 PATT='.....'
 # 2 3 4 as nulls
