@@ -17,13 +17,13 @@ time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.sy
 cat tmp/out.syl | tail -10
 
 echo
-echo eng eng texts/examples/thesearethegenerations_long.eng.nulls nulls $RESTARTS
+echo eng texts/examples/thesearethegenerations_long.eng.nulls nulls $RESTARTS
 time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.nulls nulls  $RESTARTS  > tmp/out.nulls
 cat tmp/out.nulls | tail -10
 
 echo 
-echo lat.uv texts/examples/desine.lat.uv.verbosebigr verbosebigr $RESTARTS
-time python3.6 yablasto.py lat.uv texts/examples/desine.lat.uv.verbosebigr verbosebigr $RESTARTS > tmp/out.verbosebigr
+echo eng.uv texts/examples/thesearethegenerations_long.eng.verbosebigr verbosebigr $RESTARTS
+time python3.6 yablasto.py eng.uv texts/examples/thesearethegenerations_long.eng.verbosebigr verbosebigr $RESTARTS
 cat tmp/out.verbosebigr | tail -10
 
 

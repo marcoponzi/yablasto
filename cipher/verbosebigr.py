@@ -2,13 +2,18 @@ import random
 import cipher.cipher_utils as cipher_utils
 import sys
 import math
+import string
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
       text_list=list(cipher_text)
       cipher_bit=''
       rand=random.random()
-      if rand >.4: # character
+      if rand>.95: # keys for plain-text characters that do not appear in the text
+        new_key=random.choice(list(string.digits+'_')) #string.ascii_lowercase+
+        if not new_key in key.keys():
+          cipher_bit=new_key
+      elif cipher_bit=='' or rand >.4: # character
         cipher_bit=random.choice(text_list)
         count=0
         while cipher_bit in key.keys() and count<100:
