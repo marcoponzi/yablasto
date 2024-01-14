@@ -4,13 +4,15 @@ import sys
 import math
 import string
 
+bigr_prob=.6
+
 # return a character or bigram
-def rand_cipher_bit(key,cipher_text, plain_alphabet):
+def rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_probability):
       text_list=list(cipher_text)
       cipher_bit=''
       rand=random.random()
 
-      if rand >.6: # character .6 52.1
+      if rand >bigr_probability: # character .6 52.1
         cipher_bit=random.choice(text_list)
         count=0
         while cipher_bit in key.keys() and count<100:
@@ -34,9 +36,10 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet):
 ######
 ''' create Initial key '''
 def init_key(cipher_text, plain_alphabet):
+    global bigr_prob
     key=dict()
     for char in plain_alphabet:
-      cipher_bit=rand_cipher_bit(key,cipher_text, plain_alphabet)
+      cipher_bit=rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_prob)
       key[cipher_bit]=char
     
     return cipher_utils.sort_dict(key)
@@ -44,13 +47,14 @@ def init_key(cipher_text, plain_alphabet):
 ######
 ''' swap 2 letters '''
 def change_key(key, cipher_text, plain_alphabet):
+  global bigr_prob
   klist=list(key.keys())
   rand=random.random()
   if rand>.8: # add or remove key 960 950?: 52.1; 990 -51.8
         diff=list(set(plain_alphabet)-set(key.values()))
         #if len(diff)>0 and random.random()>pow(float(len(key))/float(len(plain_alphabet)),2): # 2: 52.1
         if len(diff)>0 and random.random()>.2: #.01:-49.8
-          key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
+          key[rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_prob)]=random.choice(diff)
         else:
           del key[random.choice(list(key.keys()))]
   elif rand>.3: #.07:-51.6
@@ -67,9 +71,9 @@ def change_key(key, cipher_text, plain_alphabet):
   else:
     k = random.choice(klist)
     temp=key[k]
-    newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
+    newkey=rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_prob)
     while newkey==k:
-      newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
+      newkey=rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_prob) 
     del key[k]
     key[newkey]=temp
 
