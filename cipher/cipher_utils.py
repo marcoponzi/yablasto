@@ -51,10 +51,10 @@ def word_break_with_gaps(s, word_list):
 
     return dp[n]
     
-def evaluate_by_lexicon(best_plain, lexicon, longest_word, lexicon_avg_len, is_print=False):
+def evaluate_by_lexicon(plain_text, lexicon, longest_word, lexicon_avg_len, is_print=False):
 	#lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)
 	##print(lexicon[:10])
-	gaps,split_words=word_break_with_gaps(best_plain,lexicon)
+	gaps,split_words=word_break_with_gaps(plain_text,lexicon)
 	longest_found=''
 	tot_chars=0
 	found_words=list()
@@ -69,19 +69,16 @@ def evaluate_by_lexicon(best_plain, lexicon, longest_word, lexicon_avg_len, is_p
 	if len(found_words)!=0: 
 	  avg_len=float(tot_chars)/float(len(found_words)) 
 	  ttr=len(set(found_words))/len(found_words)
-	perc_covered=(len(best_plain)-gaps)/len(best_plain)
+	perc_covered=(len(plain_text)-gaps)/len(plain_text)
 	perc_max_len=len(longest_found)/len(longest_word)
 	perc_avg_len=float(avg_len)/float(lexicon_avg_len)
-	#final_perc=perc_covered*ttr*(perc_max_len+perc_avg_len)/2.0
-	#final_perc=ttr*perc_avg_len*(perc_covered+perc_max_len)/2
-	final_perc=perc_avg_len*perc_covered*perc_max_len
+	#final_perc=perc_avg_len*perc_covered*perc_max_len
+	final_perc=pow(perc_covered,2)*perc_avg_len*perc_max_len
 	if is_print:
 	  print(str(gaps)+" "+str(split_words))
-	  print(longest_found+" "+longest_word)
+	  print("len: "+str(len(plain_text))+" longest:"+longest_found+" "+longest_word)
 	  print("average_len lexicon:"+str(lexicon_avg_len)+" deciphered:"+str(avg_len)) 
-	  print("covered%: "+str(perc_covered))
-	  print("max_word_len%: "+str(perc_max_len))
-	  print("avg_word_len%: "+str(perc_avg_len))
-	  print("ttr: "+str(ttr))
+	  print("covered%: "+str(perc_covered)+"  ttr: "+str(ttr))
+	  print("max_word_len%: "+str(perc_max_len)+"  avg_word_len%: "+str(perc_avg_len))
 	  print("FINAL%: "+str(final_perc))
 	return final_perc
