@@ -47,7 +47,7 @@ def load_quadgrams(lang):
             store.append( qgramz )
     return store
     
-def load_lexicon(lang, min_word_len=4, max_words=5000): #4 15000
+def load_lexicon(lang, min_word_len=3, max_words=5000): #4 5000
     words=list()
     longest_word=''
     tot_chars=0
@@ -148,7 +148,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # print(str(best_score) + ' - ' + str(child_score))
           # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
           if best_score!=0 and (child_score < best_score) and \
-             abs((best_score-child_score)/best_score)<(0.24-(perc_progress*perc_progress*perc_progress)/4):
+             abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress*perc_progress)/4):
             ## log("child worse: "+str(child_score)+" best: "+str(best_score))
             parent_score=child_score
             parent_key = child_key
@@ -158,6 +158,9 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
         if consec_fails >= plateau: 
             log("Reached local minima.Restarting...:"+str(count))
             GO = False
+        if count >= plateau*3: # TODO check if this breaks verbosebigr or other ciphers
+            log("Max iterations.Restarting...:"+str(count))
+            GO = False        
         count+=1
 
     log("curr_parent: "+str(parent_score)+" "+key_to_str(parent_key))
@@ -272,7 +275,7 @@ if ARG_RESTARTS=='score':
   lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
   cipher_utils.evaluate_by_lexicon(cipher_text.upper(), lexicon, longest_word, lexicon_avg_len, True)
   tot_score, quad_score=score_text(cipher_text.upper(),module)
-  print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
+  print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
   sys.exit()
   # Number of hill climber restarts
   
@@ -319,7 +322,7 @@ log("best_plain: "+str(best_plain))
 lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
 cipher_utils.evaluate_by_lexicon(best_plain, lexicon, longest_word, lexicon_avg_len, True)
 tot_score, quad_score=score_text(best_plain,module)
-print("TOT_SCORE: "+frmt(tot_score)+" QUAD_SCORE: "+frmt(quad_score))
+print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
 
 
 
