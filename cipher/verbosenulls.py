@@ -13,7 +13,8 @@ my_cache=''
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-  return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,.4)
+  bigr_probability=.70 #.50 aaa
+  return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
 # TODO
@@ -35,25 +36,34 @@ def init_key(cipher_text, plain_alphabet):
     for i in range(0,random.randint(1,int(len(plain_alphabet)/4))):
       characters.append('_')
     for char in characters:
-      cipher_bit=rand_cipher_bit(key,cipher_text, plain_alphabet)
+      cipher_bit=verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,.2)
       key[cipher_bit]=char
     
     return cipher_utils.sort_dict(key)
 
 ######
 ''' swap 2 letters '''
-def change_key(key, cipher_text, plain_alphabet):
+def change_key(key, cipher_text, plain_alphabet): 
   klist=list(key.keys())
   rand=random.random()
-  if rand>.75: # add or remove key .75
+  if rand>.90: # add or remove key .75
         diff=list(set(plain_alphabet)-set(key.values()))
-        if list(key.values()).count('_')<(len(plain_alphabet)/4) and random.random()>.6:   
+        nulls_bigr=list(key.values()).count('_')
+        max_nulls_bigr=len(plain_alphabet)/3
+        for k in list(key.keys()):
+          if len(k)>1:
+            nulls_bigr+=1
+        if nulls_bigr<max_nulls_bigr and random.random()>.60:  #bbb .6
           diff=diff+['_'] # possibly add a null
-        if len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.65): ### .6
+        ###print(str(len(diff))+" > "+str(len(plain_alphabet)/2))
+        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.65): ### .6
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
-          del key[random.choice(list(key.keys()))]
-  elif rand>.45: #0.1
+          remove=random.choice(list(key.keys()))
+          if len(remove)==1: #favour bigrams
+            remove=random.choice(list(key.keys()))
+          del key[remove]
+  elif rand>.10: #.05 ccc
         # swap values for two keys
         i = random.choice(klist)
         j = random.choice(klist)
@@ -74,7 +84,7 @@ def change_key(key, cipher_text, plain_alphabet):
       newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
     del key[k]
     key[newkey]=temp
-
+     
   return cipher_utils.sort_dict(key)
   
 def compute_score(quad_score, text):

@@ -147,8 +147,14 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # accept child_key if the new score is better or only marginally worse
           # print(str(best_score) + ' - ' + str(child_score))
           # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
+          #curr_temperature=(0.23-pow(perc_progress,ARG_TEMPERATURE)/4)
+          # max ARG_TEMPERATURE=5 0.25-perc/4
+          #curr_temperature=(0.15+ARG_TEMPERATURE/50.0-pow(perc_progress,ARG_TEMPERATURE)/4)
+          # max ARG_TEMPERATURE=5 0.1-perc/10
+          # TODO use curr_temperature
+          curr_temperature=(0.095+ARG_TEMPERATURE/1000.0-pow(perc_progress,ARG_TEMPERATURE)/10)
           if best_score!=0 and (child_score < best_score) and \
-             abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress*perc_progress)/4):
+             abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):
             ## log("child worse: "+str(child_score)+" best: "+str(best_score))
             parent_score=child_score
             parent_key = child_key
@@ -156,10 +162,10 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
         time.sleep( sleep )
 
         if consec_fails >= plateau: 
-            log("Reached local minima.Restarting...:"+str(count))
+            log("Reached local minima.Restarting...:"+str(count)+" Temperature:"+str(curr_temperature))
             GO = False
         if count >= plateau*3: # TODO check if this breaks verbosebigr or other ciphers
-            log("Max iterations.Restarting...:"+str(count))
+            log("Max iterations.Restarting...:"+str(count)+" Temperature:"+str(curr_temperature))
             GO = False        
         count+=1
 
@@ -184,7 +190,7 @@ def decrypt(cipher_text, key):
 #####################
 def score_text(text, module):
     # [M] handling unreplaced characters as Z TODO
-    text=re.sub('[^A-Z]','Z',text)
+    text=re.sub('[^A-Z]','@',text)
     alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" 
     temp = [0,0,0,0]
     score = 0
@@ -194,6 +200,9 @@ def score_text(text, module):
     l2 = l**2
 
     for i in range(0,len(text)-3):
+      if '@' in text[i:i+4]:
+        score-=len(text)*5 # unrecognized characters
+      else:
         temp[0] = alpha.find(text[i])
         temp[1] = alpha.find(text[i+1])
         temp[2] = alpha.find(text[i+2])
@@ -278,12 +287,14 @@ if ARG_RESTARTS=='score':
   print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
   sys.exit()
   # Number of hill climber restarts
+else:
+  ARG_TEMPERATURE=float(sys.argv[5]) #in range {0..5}, typically 3
   
 restarts = int(ARG_RESTARTS) # 300
 
 # hill climber #
 # stop after plateu consecutive iters w/o score increase
-plateau = 100+restarts*10 #math.sqrt(restarts)*10 
+plateau = 100+restarts*10 #100+restarts*10
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
