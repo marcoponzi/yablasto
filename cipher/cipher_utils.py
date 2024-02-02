@@ -51,6 +51,20 @@ def word_break_with_gaps(s, word_list):
 
     return dp[n]
     
+def load_lexicon(lang, min_word_len=3, max_words=5000): #4 5000
+    words=list()
+    longest_word=''
+    tot_chars=0
+    with open("languages/"+lang+".lexicon", "r") as infile:
+        for line in infile: #remove counts, if present
+            word=re.sub(" .*","",line.split("\n")[0]).upper()
+            if len(word)>=min_word_len and len(words)<max_words:
+              words.append(word)
+              tot_chars+=len(word)
+              if len(word)>len(longest_word):
+                longest_word=word
+    return words, longest_word, float(tot_chars)/float(len(words))
+    
 def evaluate_by_lexicon(plain_text, lexicon, longest_word, lexicon_avg_len, is_print=False):
 	#lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)
 	##print(lexicon[:10])

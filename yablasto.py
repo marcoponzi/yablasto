@@ -46,20 +46,6 @@ def load_quadgrams(lang):
             qgramz = line.split("\n")[0]
             store.append( qgramz )
     return store
-    
-def load_lexicon(lang, min_word_len=3, max_words=5000): #4 5000
-    words=list()
-    longest_word=''
-    tot_chars=0
-    with open("languages/"+lang+".lexicon", "r") as infile:
-        for line in infile: #remove counts, if present
-            word=re.sub(" .*","",line.split("\n")[0]).upper()
-            if len(word)>=min_word_len and len(words)<max_words:
-              words.append(word)
-              tot_chars+=len(word)
-              if len(word)>len(longest_word):
-                longest_word=word
-    return words, longest_word, float(tot_chars)/float(len(words))
 
 
 def parse_qgram(lang):
@@ -222,6 +208,7 @@ def key_to_str(mydict):
   return res
 
 
+
 #############################################
 #Initial variables
 result = {'key':'','plain':'','score':''}
@@ -265,7 +252,7 @@ elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
 elif ARG_MODULE=='verbosenulls':
   module=verbosenulls
-  lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+  lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
   module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='nulls':
   module=nulls
@@ -283,7 +270,7 @@ else:
 
 if ARG_RESTARTS=='score':
 
-  lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+  lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
   cipher_utils.evaluate_by_lexicon(cipher_text.upper(), lexicon, longest_word, lexicon_avg_len, True)
   tot_score, quad_score=score_text(cipher_text.upper(),module)
   print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
@@ -332,7 +319,7 @@ log(' ')
 
 best_plain=best_res['plain']
 log("best_plain: "+str(best_plain))
-lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG)
+lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
 cipher_utils.evaluate_by_lexicon(best_plain, lexicon, longest_word, lexicon_avg_len, True)
 tot_score, quad_score=score_text(best_plain,module)
 print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
