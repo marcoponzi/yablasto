@@ -153,7 +153,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # max ARG_TEMPERATURE=5 0.1-perc/10
           # TODO use curr_temperature
           #curr_temperature=(0.095+ARG_TEMPERATURE/1000.0-pow(perc_progress,ARG_TEMPERATURE)/10)
-          curr_temperature=(0.20+ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/4)
+          curr_temperature=(0.19+ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/5)
           if best_score!=0 and (child_score < best_score) and \
              abs((best_score-child_score)/best_score)<curr_temperature:
             ## abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):

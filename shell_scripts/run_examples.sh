@@ -22,8 +22,8 @@ time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.nu
 cat tmp/out.nulls | tail -10
 
 echo 
-echo eng.uv texts/examples/thesearethegenerations_long.eng.uv.verbosebigr verbosebigr $RESTARTS 0.7 
-time python3.6 yablasto.py eng.uv texts/examples/thesearethegenerations_long.eng.uv.verbosebigr verbosebigr $RESTARTS 0.7 >\
+echo eng.uv texts/examples/thesearethegenerations_long.eng.uv.verbosebigr verbosebigr $RESTARTS 0.5 
+time python3.6 yablasto.py eng.uv texts/examples/thesearethegenerations_long.eng.uv.verbosebigr verbosebigr $RESTARTS 0.5 >\
      tmp/out.verbosebigr
 cat tmp/out.verbosebigr | tail -10
 
