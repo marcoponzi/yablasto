@@ -13,7 +13,7 @@ my_cache=''
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-  bigr_probability=.85 #.70 aaa
+  bigr_probability=.9 #.70 aaa
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
@@ -46,24 +46,24 @@ def init_key(cipher_text, plain_alphabet):
 def change_key(key, cipher_text, plain_alphabet): 
   klist=list(key.keys())
   rand=random.random()
-  if rand>.9: # add or remove key .60 ddd **
+  if rand>.90: # add or remove key .95 ddd **
         diff=list(set(plain_alphabet)-set(key.values()))
         nulls_bigr=list(key.values()).count('_')
         max_nulls_bigr=len(plain_alphabet)/3
         for k in list(key.keys()):
           if len(k)>1:
             nulls_bigr+=1
-        if nulls_bigr<max_nulls_bigr and random.random()>.80:  #bbb .40  
+        if nulls_bigr<max_nulls_bigr and random.random()>.90:  #bbb .40  
           diff=diff+['_'] # possibly add a null
         ###print(str(len(diff))+" > "+str(len(plain_alphabet)/2))
-        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.1): # .75 eee
+        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.50): # .1 *** 72
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
           remove=random.choice(list(key.keys()))
-          ## if len(remove)==1: #favour bigrams
-          ##  remove=random.choice(list(key.keys()))
+          if len(remove)==1: #favour bigrams
+            remove=random.choice(list(key.keys()))
           del key[remove]
-  elif rand>.05: #.10 ccc ***
+  elif rand>-1: #.10 ccc ***
         # swap values for two keys
         i = random.choice(klist)
         j = random.choice(klist)
@@ -74,7 +74,7 @@ def change_key(key, cipher_text, plain_alphabet):
         temp = key[i]
         key[i] = key[j]
         key[j] = temp
-  else: # change key for one value
+  else: # change key for one value TODO delete
     k = random.choice(klist)
     if len(k)==1: #favour bigrams
       k = random.choice(klist)
