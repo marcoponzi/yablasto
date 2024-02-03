@@ -13,7 +13,7 @@ my_cache=''
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-  bigr_probability=.68 #.70 aaa
+  bigr_probability=.85 #.70 aaa
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
@@ -46,24 +46,24 @@ def init_key(cipher_text, plain_alphabet):
 def change_key(key, cipher_text, plain_alphabet): 
   klist=list(key.keys())
   rand=random.random()
-  if rand>.95: # add or remove key .90 ddd
+  if rand>.9: # add or remove key .60 ddd **
         diff=list(set(plain_alphabet)-set(key.values()))
         nulls_bigr=list(key.values()).count('_')
         max_nulls_bigr=len(plain_alphabet)/3
         for k in list(key.keys()):
           if len(k)>1:
             nulls_bigr+=1
-        if nulls_bigr<max_nulls_bigr and random.random()>.40:  #bbb .60
+        if nulls_bigr<max_nulls_bigr and random.random()>.80:  #bbb .40  
           diff=diff+['_'] # possibly add a null
         ###print(str(len(diff))+" > "+str(len(plain_alphabet)/2))
-        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.75): # .65 eee
+        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.1): # .75 eee
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
           remove=random.choice(list(key.keys()))
-          if len(remove)==1: #favour bigrams
-            remove=random.choice(list(key.keys()))
+          ## if len(remove)==1: #favour bigrams
+          ##  remove=random.choice(list(key.keys()))
           del key[remove]
-  elif rand>.20: #.10 ccc
+  elif rand>.05: #.10 ccc ***
         # swap values for two keys
         i = random.choice(klist)
         j = random.choice(klist)
@@ -87,11 +87,24 @@ def change_key(key, cipher_text, plain_alphabet):
      
   return cipher_utils.sort_dict(key)
   
+def myeval(text, lexicon):
+  score=0
+  for w in lexicon:
+    if w in text:
+      score+=1
+  return score/len(text)
+  
 def compute_score(quad_score, text):
-    lexicon_score=cipher_utils.evaluate_by_lexicon(text, my_lexicon, my_longest_word, my_lexicon_avg_len)
-    weight=2.0 # higher weight: more relevance of quadgrams 20:0.0196/-87.36784; 50:0.0286/-83
+    ##lexicon_score=cipher_utils.evaluate_by_lexicon(text, my_lexicon, my_longest_word, my_lexicon_avg_len)
+    lexicon_score=myeval(text,my_lexicon)
+    weight=1.0 # higher weight: more relevance of quadgrams 20:0.0196/-87.36784; 50:0.0286/-83
     # favor solutions resulting in longer text
-    return quad_score/(weight+math.pow(lexicon_score,1)) # 0.3:0.0196/-87.36784; 0.5:0.0286/-83 *math.pow(len(text),0.4)
+    return quad_score/(weight+math.pow(lexicon_score,1.5)) # 0.3:0.0196/-87.36784; 0.5:0.0286/-83 *math.pow(len(text),0.4)
+    
+def no_lex_compute_score(quad_score, text):
+  weight=50 # higher weight, more relevance of quad_score
+  # favor solutions resulting in longer text
+  return quad_score/(weight+math.pow(len(text),0.05))
   
 def score_from_cache(quad_score, text):
   if text in my_cache:
