@@ -139,7 +139,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           # max ARG_TEMPERATURE=5 0.1-perc/10
           # TODO use curr_temperature
           #curr_temperature=(0.095+ARG_TEMPERATURE/1000.0-pow(perc_progress,ARG_TEMPERATURE)/10)
-          curr_temperature=(0.19+ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/5)
+          curr_temperature=(0.20+ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/5)
           if best_score!=0 and (child_score < best_score) and \
              abs((best_score-child_score)/best_score)<curr_temperature:
             ## abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):
@@ -186,10 +186,11 @@ def score_text(text, module):
     l=26
     l3 = l**3
     l2 = l**2
-
+    #print("text: "+text)
     for i in range(0,len(text)-3):
       if '@' in text[i:i+4]:
         score-=len(text)*5 # unrecognized characters
+        #print("score minus "+str(score))
       else:
         temp[0] = alpha.find(text[i])
         temp[1] = alpha.find(text[i+1])
@@ -197,8 +198,9 @@ def score_text(text, module):
         temp[3] = alpha.find(text[i+3])
         val=qgram[(l3)*temp[0] + (l2)*temp[1] + l*temp[2] + temp[3]]
         score += val**3
+        #print("score plus "+str(score))
     quad_score=score/float(max(0.001,len(text)-3)) # max: avoid division by zero
-
+    #print("SCORE "+str(score)+"\n\n")
     return module.score(quad_score,text),quad_score
     
 def key_to_str(mydict):
@@ -283,12 +285,12 @@ restarts = int(ARG_RESTARTS) # 300
 
 # hill climber #
 # stop after plateu consecutive iters w/o score increase
-plateau = 100+restarts*10 #100+restarts*10
+plateau = 600+restarts*5 #100+restarts*10
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.1)/restarts
      #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
-     if perc_progress<=.1 or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
+     if perc_progress<=.1: #or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
         log("RAND KEY "+key_to_str(parent_key))
