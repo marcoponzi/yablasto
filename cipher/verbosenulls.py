@@ -13,7 +13,7 @@ my_cache=''
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-  bigr_probability=.9 #.70 aaa
+  bigr_probability=.7 #.9 aaa
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
@@ -46,7 +46,7 @@ def init_key(cipher_text, plain_alphabet):
 def change_key(key, cipher_text, plain_alphabet): 
   klist=list(key.keys())
   rand=random.random()
-  if rand>.90: # add or remove key .95 ddd **
+  if rand>.90: # add or remove key .90 ddd **
         diff=list(set(plain_alphabet)-set(key.values()))
         nulls_bigr=list(key.values()).count('_')
         max_nulls_bigr=len(plain_alphabet)/3
@@ -56,14 +56,19 @@ def change_key(key, cipher_text, plain_alphabet):
         if nulls_bigr<max_nulls_bigr and random.random()>.90:  #bbb .40  
           diff=diff+['_'] # possibly add a null
         ###print(str(len(diff))+" > "+str(len(plain_alphabet)/2))
-        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.50): # .1 *** 72
+        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.50): # .50 ccc
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
-          remove=random.choice(list(key.keys()))
-          if len(remove)==1: #favour bigrams
-            remove=random.choice(list(key.keys()))
-          del key[remove]
-  elif rand>-1: #.10 ccc ***
+          to_be_removed=random.choice(list(key.keys()))
+          if len(to_be_removed)==1: #favour bigrams
+            to_be_removed=random.choice(list(key.keys()))
+          del key[to_be_removed]
+  elif rand<.20: # replace one key
+    to_be_removed=random.choice(list(key.keys()))
+    temp=key[to_be_removed]
+    del key[to_be_removed]
+    key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=temp
+  else:
         # swap values for two keys
         i = random.choice(klist)
         j = random.choice(klist)
@@ -74,16 +79,6 @@ def change_key(key, cipher_text, plain_alphabet):
         temp = key[i]
         key[i] = key[j]
         key[j] = temp
-  else: # change key for one value TODO delete
-    k = random.choice(klist)
-    if len(k)==1: #favour bigrams
-      k = random.choice(klist)
-    temp=key[k]
-    newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
-    while newkey==k:
-      newkey=rand_cipher_bit(key,cipher_text, plain_alphabet)  
-    del key[k]
-    key[newkey]=temp
      
   return cipher_utils.sort_dict(key)
   
@@ -91,13 +86,13 @@ def myeval(text, lexicon):
   score=0
   for w in lexicon:
     if w in text:
-      score+=1
+      score+=math.pow(len(w),1)
   return score/len(text)
   
 def compute_score(quad_score, text):
     ##lexicon_score=cipher_utils.evaluate_by_lexicon(text, my_lexicon, my_longest_word, my_lexicon_avg_len)
     lexicon_score=myeval(text,my_lexicon)
-    weight=1.0 # higher weight: more relevance of quadgrams 20:0.0196/-87.36784; 50:0.0286/-83
+    weight=0.17 # higher weight: more relevance of quadgrams 20:0.0196/-87.36784; 50:0.0286/-83
     # favor solutions resulting in longer text
     return quad_score/(weight+math.pow(lexicon_score,1.5)) # 0.3:0.0196/-87.36784; 0.5:0.0286/-83 *math.pow(len(text),0.4)
     
