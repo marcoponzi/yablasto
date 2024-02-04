@@ -14,12 +14,12 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_probability):
 
       if rand >bigr_probability: # character .6 52.1
         cipher_bit=random.choice(text_list)
-        count=0
-        while cipher_bit in key.keys() and count<100:
-          cipher_bit=random.choice(text_list)
-          count+=1
         if cipher_bit in key.keys():
-          cipher_bit=''
+          diff=set(text_list).difference(set(key.keys()))
+          if len(diff)>0:
+            cipher_bit=random.choice(list(diff))
+          else:
+            cipher_bit=''
       if cipher_bit=='': # bigram
         pos=random.randint(0,len(cipher_text)-1)
         cipher_bit=cipher_text[pos:pos+2]
