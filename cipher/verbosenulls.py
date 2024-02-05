@@ -5,6 +5,7 @@ import sys
 import math
 import string
 import copy
+import re
 
 my_lexicon=''
 my_longest_word=''
@@ -13,7 +14,7 @@ my_cache=''
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet):
-  bigr_probability=.7 #.9 aaa
+  bigr_probability=.80 #.70 aaa
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
@@ -35,6 +36,13 @@ def init_key(cipher_text, plain_alphabet):
     characters=copy.deepcopy(plain_alphabet)
     for i in range(0,random.randint(1,int(len(plain_alphabet)/4))):
       characters.append('_')
+    for cipher_char in set(list(cipher_text)):
+      if len(characters)>0:
+        plain_char=random.choice(characters)
+        characters.remove(plain_char)
+      else:
+        plain_char='_'
+      key[cipher_char]=plain_char
     for char in characters:
       cipher_bit=verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,.2)
       key[cipher_bit]=char
@@ -42,28 +50,28 @@ def init_key(cipher_text, plain_alphabet):
     return cipher_utils.sort_dict(key)
 
 ######
-''' swap 2 letters '''
-def change_key(key, cipher_text, plain_alphabet): 
+def change_key_aux(key, cipher_text, plain_alphabet): 
+  key=copy.deepcopy(key)
   klist=list(key.keys())
   rand=random.random()
-  if rand>.90: # add or remove key .90 ddd **
+  if rand>.90: # add or remove key .90 bbb **
         diff=list(set(plain_alphabet)-set(key.values()))
         nulls_bigr=list(key.values()).count('_')
         max_nulls_bigr=len(plain_alphabet)/3
         for k in list(key.keys()):
           if len(k)>1:
             nulls_bigr+=1
-        if nulls_bigr<max_nulls_bigr and random.random()>.90:  #bbb .40  
+        if nulls_bigr<max_nulls_bigr and random.random()>.90: 
           diff=diff+['_'] # possibly add a null
         ###print(str(len(diff))+" > "+str(len(plain_alphabet)/2))
-        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.50): # .50 ccc
+        if nulls_bigr<max_nulls_bigr and len(diff)>0 and (len(diff)>len(plain_alphabet)/2 or random.random()>.60): # .50 ccc
           key[rand_cipher_bit(key,cipher_text, plain_alphabet)]=random.choice(diff)
         else:
           to_be_removed=random.choice(list(key.keys()))
           if len(to_be_removed)==1: #favour bigrams
             to_be_removed=random.choice(list(key.keys()))
           del key[to_be_removed]
-  elif rand<.20: # replace one key
+  elif rand<.0: # 30 replace one key ddd TODO remove
     to_be_removed=random.choice(list(key.keys()))
     temp=key[to_be_removed]
     del key[to_be_removed]
@@ -81,6 +89,18 @@ def change_key(key, cipher_text, plain_alphabet):
         key[j] = temp
      
   return cipher_utils.sort_dict(key)
+  
+def change_key(key, cipher_text, plain_alphabet):
+  #print("**** "+cipher_utils.key_to_str(key))
+  #print("**** "+cipher_utils.decrypt(cipher_text, key))
+  new_key=change_key_aux(key, cipher_text, plain_alphabet)
+  while re.search("[^A-Z]", cipher_utils.decrypt(cipher_text, new_key)):
+    #print("OLD: "+cipher_utils.key_to_str(new_key))
+    #print(cipher_utils.decrypt(cipher_text, new_key))
+    new_key=change_key_aux(key, cipher_text, plain_alphabet)
+    #print("NEW: "+cipher_utils.key_to_str(new_key))
+    #print(cipher_utils.decrypt(cipher_text, new_key))
+  return new_key
   
 def myeval(text, lexicon):
   score=0

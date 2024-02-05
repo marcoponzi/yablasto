@@ -14,6 +14,12 @@ def sort_dict(indict):
 
   return new_d
   
+def key_to_str(mydict):
+  res=''
+  for k in mydict.keys():
+    res+=str(k)+":"+str(mydict[k])+" "
+  return res
+  
 def load_crib(fname):
     words=list()
     with open("texts/examples/"+fname, "r") as infile:
@@ -64,6 +70,16 @@ def load_lexicon(lang, min_word_len=3, max_words=5000): #4 5000
               if len(word)>len(longest_word):
                 longest_word=word
     return words, longest_word, float(tot_chars)/float(len(words))
+    
+
+# key is a map: key:cipher-symbol, val:plain-text symbol
+#  sorted by decreasing key length
+def decrypt(cipher_text, key):
+    plain=cipher_text
+    for cipher_bit in key.keys():
+      plain=re.sub(cipher_bit, key[cipher_bit],plain)
+    plain = re.sub('_', '',plain) # remove nulls
+    return plain
     
 def evaluate_by_lexicon(plain_text, lexicon, longest_word, lexicon_avg_len, is_print=False):
 	#lexicon, longest_word, lexicon_avg_len=load_lexicon(ARG_LANG,4,30000)

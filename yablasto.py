@@ -109,7 +109,7 @@ def clean_input(ciphertext):
 
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
-    best_score, ignore = score_text(decrypt(cipher_text,parent_key ), module)
+    best_score, ignore = score_text(cipher_utils.decrypt(cipher_text,parent_key ), module)
     ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
@@ -119,7 +119,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     consec_fails = 0
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
-        child_score, ignore = score_text(decrypt(cipher_text,child_key ), module)
+        child_score, ignore = score_text(cipher_utils.decrypt(cipher_text,child_key ), module)
         if (child_score > best_score):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
@@ -157,22 +157,14 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
             GO = False        
         count+=1
 
-    log("curr_parent: "+str(parent_score)+" "+key_to_str(parent_key))
+    log("curr_parent: "+str(parent_score)+" "+cipher_utils.key_to_str(parent_key))
     result=dict()
     result['key'] = best_key
-    result['plain'] = decrypt(cipher_text, best_key)
+    result['plain'] = cipher_utils.decrypt(cipher_text, best_key)
     result['score'] = best_score
     return result
 
 
-# key is a map: key:cipher-symbol, val:plain-text symbol
-#  sorted by decreasing key length
-def decrypt(cipher_text, key):
-    plain=cipher_text
-    for cipher_bit in key.keys():
-      plain=re.sub(cipher_bit, key[cipher_bit],plain)
-    plain = re.sub('_', '',plain) # remove nulls
-    return plain
 
 
 #####################
@@ -203,11 +195,7 @@ def score_text(text, module):
     #print("SCORE "+str(score)+"\n\n")
     return module.score(quad_score,text),quad_score
     
-def key_to_str(mydict):
-  res=''
-  for k in mydict.keys():
-    res+=str(k)+":"+str(mydict[k])+" "
-  return res
+
 
 
 
@@ -293,20 +281,20 @@ for restart in range(restarts ):
      if perc_progress<=.1: #or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
-        log("RAND KEY "+key_to_str(parent_key))
+        log("RAND KEY "+cipher_utils.key_to_str(parent_key))
      else:
         parent_key=copy.deepcopy(best_res['key'])
         log("")
-        log("BEST KEY "+key_to_str(parent_key))
+        log("BEST KEY "+cipher_utils.key_to_str(parent_key))
      result = hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress,module)
      if result['score']>best_res['score']:
        log(" *** old "+frmt(best_res['score'])+" "+str(best_res['plain']))
        log(" *** new "+frmt(result['score'])+" "+str(result['plain']))
-       log(" old key "+key_to_str(best_res['key']))
-       log(" new key "+key_to_str(result['key']))
+       log(" old key "+cipher_utils.key_to_str(best_res['key']))
+       log(" new key "+cipher_utils.key_to_str(result['key']))
        best_res=result
 
-     tup = (result['score'],restart,result['plain'], key_to_str(result['key']) )
+     tup = (result['score'],restart,result['plain'], cipher_utils.key_to_str(result['key']) )
      if (not(result['plain'] in plains)):
        plains.add(result['plain'])
        meta.append(tup)
