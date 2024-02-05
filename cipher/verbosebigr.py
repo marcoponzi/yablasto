@@ -14,7 +14,11 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_probability):
 
       if rand >bigr_probability: # character .6 52.1
         cipher_bit=random.choice(text_list)
-        if cipher_bit in key.keys():
+        count=0
+        while cipher_bit in key.keys() and count<100:
+          cipher_bit=random.choice(text_list) # pick based on frequency
+          count+=1
+        if cipher_bit in key.keys(): # pick a character that is not a key yet
           diff=set(text_list).difference(set(key.keys()))
           if len(diff)>0:
             cipher_bit=random.choice(list(diff))
