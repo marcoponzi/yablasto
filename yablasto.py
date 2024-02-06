@@ -120,7 +120,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
     while GO:
         child_key = module.change_key(copy.deepcopy(parent_key),cipher_text, plain_alphabet)
         child_score, ignore = score_text(cipher_utils.decrypt(cipher_text,child_key ), module)
-        if (child_score > best_score):
+        if child_score > best_score or (child_score==best_score and len(child_key)<len(best_key)):
           ### log("child better: "+str(child_score)+" best: "+str(best_score))
           consec_fails = 0
           best_score = child_score
@@ -131,15 +131,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           consec_fails  += 1
 
           # accept child_key if the new score is better or only marginally worse
-          # print(str(best_score) + ' - ' + str(child_score))
-          # print("   "+str(abs((best_score-child_score)/best_score))+" < "+str(0.19-(perc_progress)/5))
-          #curr_temperature=(0.23-pow(perc_progress,ARG_TEMPERATURE)/4)
-          # max ARG_TEMPERATURE=5 0.25-perc/4
-          #curr_temperature=(0.15+ARG_TEMPERATURE/50.0-pow(perc_progress,ARG_TEMPERATURE)/4)
-          # max ARG_TEMPERATURE=5 0.1-perc/10
-          # TODO use curr_temperature
-          #curr_temperature=(0.095+ARG_TEMPERATURE/1000.0-pow(perc_progress,ARG_TEMPERATURE)/10)
-          curr_temperature=(0.20+ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/5)
+          curr_temperature=(0.25+perc_progress*ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/4)
           if best_score!=0 and (child_score < best_score) and \
              abs((best_score-child_score)/best_score)<curr_temperature:
             ## abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):
@@ -276,7 +268,7 @@ restarts = int(ARG_RESTARTS) # 300
 plateau = 600+restarts*5 #100+restarts*10
 
 for restart in range(restarts ):
-     perc_progress=float(restart+0.1)/restarts
+     perc_progress=float(restart+0.01)/restarts
      #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
      if perc_progress<=.1: #or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
         parent_key = module.init_key(cipher_text, plain_alphabet)
@@ -287,7 +279,7 @@ for restart in range(restarts ):
         log("")
         log("BEST KEY "+cipher_utils.key_to_str(parent_key))
      result = hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress,module)
-     if result['score']>best_res['score']:
+     if result['key']!=best_res['key'] and result['score']>=best_res['score']: #if equal score, new key is shorter
        log(" *** old "+frmt(best_res['score'])+" "+str(best_res['plain']))
        log(" *** new "+frmt(result['score'])+" "+str(result['plain']))
        log(" old key "+cipher_utils.key_to_str(best_res['key']))
