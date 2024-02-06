@@ -131,7 +131,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           consec_fails  += 1
 
           # accept child_key if the new score is better or only marginally worse
-          curr_temperature=(0.25+(1-perc_progress)*ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/4)
+          curr_temperature=(0.25+(1-perc_progress)*ARG_TEMPERATURE/20.0-pow(perc_progress,ARG_TEMPERATURE)/4)
           if best_score!=0 and (child_score < best_score) and \
              abs((best_score-child_score)/best_score)<curr_temperature:
             ## abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):
