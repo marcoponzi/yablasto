@@ -131,7 +131,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
           consec_fails  += 1
 
           # accept child_key if the new score is better or only marginally worse
-          curr_temperature=(0.25+perc_progress*ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/4)
+          curr_temperature=(0.25+(1-perc_progress)*ARG_TEMPERATURE/200.0-pow(perc_progress,ARG_TEMPERATURE)/4)
           if best_score!=0 and (child_score < best_score) and \
              abs((best_score-child_score)/best_score)<curr_temperature:
             ## abs((best_score-child_score)/best_score)<(0.21-(perc_progress*perc_progress)/4):
@@ -144,7 +144,7 @@ def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module)
         if consec_fails >= plateau: 
             log("Reached local minima.Restarting...:"+str(count)+" Temperature:"+str(curr_temperature))
             GO = False
-        if count >= plateau*3: # TODO check if this breaks verbosebigr or other ciphers
+        if count >= plateau*5: # TODO check if this breaks verbosebigr or other ciphers
             log("Max iterations.Restarting...:"+str(count)+" Temperature:"+str(curr_temperature))
             GO = False        
         count+=1
@@ -269,12 +269,12 @@ plateau = 600+restarts*5 #100+restarts*10
 
 for restart in range(restarts ):
      perc_progress=float(restart+0.01)/restarts
-     #if perc_progress<.2: # or random.random()>(math.sqrt(perc_progress)*1.0): 
-     if perc_progress<=.1: #or random.random()>(math.sqrt(perc_progress)*2): # len(best_res['key'])==0
+
+     if perc_progress<=.15: # .1 initial random keys
         parent_key = module.init_key(cipher_text, plain_alphabet)
         log("")
         log("RAND KEY "+cipher_utils.key_to_str(parent_key))
-     else:
+     else: # refining current best key
         parent_key=copy.deepcopy(best_res['key'])
         log("")
         log("BEST KEY "+cipher_utils.key_to_str(parent_key))

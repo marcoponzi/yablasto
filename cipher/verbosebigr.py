@@ -4,7 +4,7 @@ import sys
 import math
 import string
 
-bigr_prob=.6
+bigr_prob=.40 #.6 aaa
 
 # return a character or bigram
 def rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_probability):
@@ -54,14 +54,14 @@ def change_key(key, cipher_text, plain_alphabet):
   global bigr_prob
   klist=list(key.keys())
   rand=random.random()
-  if rand>.8: # add or remove key 960 950?: 52.1; 990 -51.8
+  if rand>.60: # 80 bbb
         diff=list(set(plain_alphabet)-set(key.values()))
         #if len(diff)>0 and random.random()>pow(float(len(key))/float(len(plain_alphabet)),2): # 2: 52.1
         if len(diff)>0 and random.random()>.2: #.01:-49.8
           key[rand_cipher_bit(key,cipher_text, plain_alphabet, bigr_prob)]=random.choice(diff)
         else:
           del key[random.choice(list(key.keys()))]
-  elif rand>.3: #.07:-51.6
+  elif rand>.30: # 30 CCC
     switch = True
     while switch:
         i = random.choice(klist)
