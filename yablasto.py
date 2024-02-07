@@ -228,23 +228,26 @@ plains=set(result['plain'])
  Random-restart hill climbing '''
 meta = []
 
-if ARG_MODULE=='simplesub':
-  module=simplesub
-elif ARG_MODULE=='verbosebigr':
-  module=verbosebigr
-elif ARG_MODULE=='verbosenulls':
-  module=verbosenulls
-  lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
-  module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
-elif ARG_MODULE=='nulls':
-  module=nulls
-elif ARG_MODULE.startswith('crib_'):
+lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
+if ARG_MODULE.startswith('crib_'):
   module=crib
   ignore,crib_text,module_name=ARG_MODULE.split('_')
   log(crib_text)
   crib_module=importlib.import_module("cipher."+module_name)
   log('CRIB_MODULE '+str(crib_module))
   crib.set_module(crib_module, crib_text, ARG_LANG)
+  ##lexicon=crib.CRIB+lexicon #add crib words to lexicon
+  if module_name=='verbosenulls': # TODO factory method to create modules?
+    crib_module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
+elif ARG_MODULE=='simplesub':
+  module=simplesub
+elif ARG_MODULE=='verbosebigr':
+  module=verbosebigr
+elif ARG_MODULE=='verbosenulls':
+  module=verbosenulls
+  module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
+elif ARG_MODULE=='nulls':
+  module=nulls
 elif ARG_MODULE=='syl':
   module=syl
 else:
