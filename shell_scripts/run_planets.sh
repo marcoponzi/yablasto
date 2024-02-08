@@ -1,4 +1,4 @@
-RESTARTS=300
+RESTARTS=200
 
 for lang in ita.uv lat.uv #ita lat 
 do
@@ -13,7 +13,7 @@ do
   do
   OUT=out'_'$fname'_'$lang'_'$encoding'_'$crib'_'$method
   echo; echo tmp/$OUT
-  python3.6 yablasto.py $lang $f'.'$encoding $crib'_'$method $RESTARTS > tmp/$OUT
+  python3.6 yablasto.py $lang $f'.'$encoding $crib'_'$method $RESTARTS 1 > tmp/$OUT
   tail -10 tmp/$OUT
   done
   done
@@ -24,7 +24,7 @@ do
   do
   OUT=out'_'$fname'_'$lang'_'$encoding'_'$crib'_'$method
   echo; echo tmp/$OUT
-  python3.6 yablasto.py $lang $f'.'$encoding $crib'_'$method $RESTARTS > tmp/$OUT
+  python3.6 yablasto.py $lang $f'.'$encoding $crib'_'$method $RESTARTS 1 > tmp/$OUT
   tail -10 tmp/$OUT
   done
 
