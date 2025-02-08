@@ -1,6 +1,6 @@
 
 SHORT=150
-LONG=200  
+LONG=300  
 
 
 echo 
