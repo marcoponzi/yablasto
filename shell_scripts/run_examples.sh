@@ -41,3 +41,18 @@ time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.ve
 	     tmp/out.verbosenulls
 cat tmp/out.verbosenulls | tail -10
 
+echo
+echo eng texts/examples/thesearethegenerations_long.eng.verbosenulls verbosenulls $SHORT 2
+python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng verbosenulls score | tail -1
+time python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.verbosenulls verbosenulls $SHORT 2  >\
+	     tmp/out.verbosenulls
+cat tmp/out.verbosenulls | tail -10
+
+echo
+echo lat.anagr texts/examples/enim.manet.lat.simplesubanagr simplesubanagr 100 7
+python3.6 yablasto.py lat.anagr texts/examples/enim.manet.lat simplesubanagr score | tail -1
+time python3.6 yablasto.py lat.anagr texts/examples/enim.manet.lat.simplesubanagr simplesubanagr $SHORT 7 >\
+	     tmp/out.simplesubanagr
+cat tmp/out.simplesubanagr | tail -10
+
+
