@@ -14,6 +14,14 @@ def sort_dict(indict):
 
   return new_d
   
+def position_in_list(in_list, item):
+  index=-1
+  try:
+    index = in_list.index(item)
+  except ValueError as error:
+    return index
+  return index
+  
 def key_to_str(mydict):
   res=''
   for k in mydict.keys():
@@ -61,15 +69,23 @@ def load_lexicon(lang, min_word_len=3, max_words=5000): #4 5000
     words=list()
     longest_word=''
     tot_chars=0
+    lexicon_freq=dict()
+    max_count=-1
     with open("languages/"+lang+".lexicon", "r") as infile:
         for line in infile: #remove counts, if present
-            word=re.sub(" .*","",line.split("\n")[0]).upper()
+            #word=re.sub(" .*","",line.split("\n")[0]).upper()
+            word,num_str=line.split(' ')
+            count=float(num_str)
+            if max_count==-1:
+              max_count=count
+            count=count/max_count
+            lexicon_freq[word]=count
             if len(word)>=min_word_len and len(words)<max_words:
               words.append(word)
               tot_chars+=len(word)
               if len(word)>len(longest_word):
                 longest_word=word
-    return words, longest_word, float(tot_chars)/float(len(words))
+    return words, longest_word, float(tot_chars)/float(len(words)), lexicon_freq
     
 
 # key is a map: key:cipher-symbol, val:plain-text symbol

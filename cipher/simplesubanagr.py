@@ -1,8 +1,21 @@
 import random
 import cipher.cipher_utils as cipher_utils
 import cipher.simplesub as simplesub
-import copy
 import re
+import math
+
+my_lexicon=''
+my_longest_word=''
+my_lexicon_avg_len=''
+
+def set_lexicon_freq(lexicon_freq, longest_word, lexicon_avg_len):
+  print("simplesubanagr set_lexicon_freq")
+  global my_longest_word
+  global my_lexicon_freq
+  global my_lexicon_avg_len
+  my_lexicon_freq=lexicon_freq
+  my_longest_word=longest_word
+  my_lexicon_avg_len=lexicon_avg_len
 
 # , as word separator
 
@@ -21,8 +34,23 @@ def init_key(cipher_text, plain_alphabet):
 def change_key(key, cipher_text, plain_alphabet):
     return simplesub.change_key(key, cipher_text, plain_alphabet)
     
+## def score(quad_score, plain_text):
+##  return quad_score
+  
 def score(quad_score, plain_text):
-  return quad_score
+  words=plain_text.split(',') 
+  score=quad_score
+  l_lex=len(my_lexicon)
+  lex_words=my_lexicon_freq.keys()
+  quad_weight=1
+  # higher values favor quads over lexicon
+  for w in words:
+    if w in lex_words:
+      freq=my_lexicon_freq[w]
+      lex_score=0.2*len(w)*(quad_weight+math.pow(freq,0.5))
+      score+=lex_score
+      ##print("FOUND W: "+w+" freq: "+str(freq)+" lex_score: "+str(lex_score))
+  return score
 
 # comma , as word separators
 def do_anagrams(text):

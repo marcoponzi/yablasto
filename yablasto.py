@@ -253,7 +253,7 @@ plains=set(result['plain'])
  Random-restart hill climbing '''
 meta = []
 
-lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
+lexicon, longest_word, lexicon_avg_len, lexicon_freq=cipher_utils.load_lexicon(ARG_LANG)
 if ARG_MODULE.startswith('crib_'):
   module=crib
   ignore,crib_text,module_name=ARG_MODULE.split('_')
@@ -268,9 +268,10 @@ elif ARG_MODULE=='simplesub':
   module=simplesub
 elif ARG_MODULE=='simplesubanagr':
   module=simplesubanagr
+  module.set_lexicon_freq(lexicon_freq, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
-elif ARG_MODULE=='verbosenulls':
+elif ARG_MODULE in ['verbosenulls','simplesubanagr']:
   module=verbosenulls
   module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='nulls':
@@ -289,8 +290,6 @@ log('cipher text:'+cipher_text)
 log(' ')
 
 if ARG_RESTARTS=='score':
-
-  lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
   evaluate_by_lexicon2(cipher_text.upper(), lexicon, longest_word, lexicon_avg_len, is_anagr)
   tot_score, quad_score=score_text(cipher_text.upper(),module)
   print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
@@ -343,7 +342,7 @@ log(' ')
 
 best_plain=best_res['plain']
 log("best_plain: "+str(best_plain))
-lexicon, longest_word, lexicon_avg_len=cipher_utils.load_lexicon(ARG_LANG)
+
 evaluate_by_lexicon2(best_plain.upper(), lexicon, longest_word, lexicon_avg_len, is_anagr)
 tot_score, quad_score=score_text(best_plain,module)
 print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
