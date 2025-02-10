@@ -44,8 +44,15 @@ cat tmp/out.verbosenulls | tail -10
 echo
 echo lat.anagr texts/examples/enim.manet.lat.simplesubanagr simplesubanagr 100 7
 python3.6 yablasto.py lat.anagr texts/examples/enim.manet.lat simplesubanagr score | tail -1
-time python3.6 yablasto.py lat.anagr texts/examples/enim.manet.lat.simplesubanagr simplesubanagr $SHORT 2.5 >\
-	     tmp/out.simplesubanagr
-cat tmp/out.simplesubanagr | tail -10
+time python3.6 yablasto.py lat.anagr texts/examples/enim.manet.lat.simplesubanagr simplesubanagr $SHORT 7 >\
+	     tmp/out.enim.simplesubanagr
+cat tmp/out.enim.simplesubanagr | tail -10
+
+echo
+echo lat.anagr texts/examples/desine.lat.simplesubanagr simplesubanagr 100 7
+python3.6 yablasto.py lat.anagr texts/examples/desine.lat.simplesubanagr simplesubanagr score | tail -1
+time python3.6 yablasto.py lat.anagr texts/examples/desine.lat.simplesubanagr simplesubanagr $SHORT 7 >\
+	     tmp/out.desine.simplesubanagr
+cat tmp/out.desine.simplesubanagr | tail -10
 
 
