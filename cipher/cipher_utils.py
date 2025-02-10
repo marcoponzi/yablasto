@@ -1,7 +1,12 @@
 import re
 
 
-    
+def frmt(myfloat,dec=5):
+  # return "{:.5f}".format(myfloat)
+  formstr="{:."+str(dec)+"f}"
+  return formstr.format(myfloat)
+  
+  
 # longer keys first
 def sort_dict(indict):
   new_d = {}

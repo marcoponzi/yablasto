@@ -1,5 +1,6 @@
 import random
 import cipher.cipher_utils as cipher_utils
+from cipher.cipher_utils import frmt
 import cipher.simplesub as simplesub
 import re
 import math
@@ -39,16 +40,17 @@ def change_key(key, cipher_text, plain_alphabet):
   
 def score(quad_score, plain_text):
   words=plain_text.split(',') 
-  score=quad_score
+  score=quad_score*len(plain_text)
   l_lex=len(my_lexicon)
   lex_words=my_lexicon_freq.keys()
-  quad_weight=1 # higher values favor quads over lexicon
+  quad_weight=3 # higher values favor quads over lexicon
   for w in words:
     if w in lex_words:
       freq=my_lexicon_freq[w]
-      lex_score=0.2*len(w)*(quad_weight+math.pow(freq,0.5))
-      score+=lex_score
-      ##print("FOUND W: "+w+" freq: "+str(freq)+" lex_score: "+str(lex_score))
+      lex_score=len(w)*(0.1+math.pow(freq,0.8))/quad_weight
+      #quad_score negative, lex_score positive
+      score=score/(1+lex_score)
+      ##print("FOUND W: "+w+" freq: "+frmt(freq)+" lex_score: "+frmt(lex_score))
   return score
 
 # comma , as word separators

@@ -17,6 +17,7 @@ import cipher.verbosebigr as verbosebigr
 import cipher.nulls as nulls
 import cipher.verbosenulls as verbosenulls
 import cipher.cipher_utils as cipher_utils
+from cipher.cipher_utils import frmt
 import cipher.crib as crib
 import cipher.syl as syl
 #import cipher.cipher_utils as cipher_utils
@@ -29,10 +30,7 @@ sys.path.insert(2, 'cipher')
 # delay time in seconds
 sleep = 0
 
-def frmt(myfloat,dec=5):
-  # return "{:.5f}".format(myfloat)
-  formstr="{:."+str(dec)+"f}"
-  return formstr.format(myfloat)
+
 
 def log(msg):
     time = datetime.datetime.now()
