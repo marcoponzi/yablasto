@@ -18,7 +18,8 @@ def rand_cipher_bit(key,cipher_text, plain_alphabet):
   return verbosebigr.rand_cipher_bit(key,cipher_text, plain_alphabet,bigr_probability)
 
 
-def set_lexicon(lexicon, longest_word, lexicon_avg_len):
+def set_lexicon(lexicon_map, longest_word, lexicon_avg_len):
+  lexicon=list(lexicon_map.keys())
   global my_longest_word
   global my_lexicon
   global my_lexicon_avg_len

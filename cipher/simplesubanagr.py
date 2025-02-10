@@ -8,7 +8,7 @@ my_lexicon=''
 my_longest_word=''
 my_lexicon_avg_len=''
 
-def set_lexicon_freq(lexicon_freq, longest_word, lexicon_avg_len):
+def set_lexicon(lexicon_freq, longest_word, lexicon_avg_len):
   print("simplesubanagr set_lexicon_freq")
   global my_longest_word
   global my_lexicon_freq
@@ -42,8 +42,7 @@ def score(quad_score, plain_text):
   score=quad_score
   l_lex=len(my_lexicon)
   lex_words=my_lexicon_freq.keys()
-  quad_weight=1
-  # higher values favor quads over lexicon
+  quad_weight=1 # higher values favor quads over lexicon
   for w in words:
     if w in lex_words:
       freq=my_lexicon_freq[w]

@@ -238,7 +238,7 @@ with open(ARG_CTEXT_FILE, "r") as infile:
   for line in infile:
     ctext+=line
 
-is_anagr=(ARG_MODULE=='simplesubanagr')
+is_anagr=('anagr' in ARG_MODULE)
 if is_anagr:
   qgram,plain_alphabet = parse_qgram(ARG_LANG,True)
 else:
@@ -252,7 +252,7 @@ plains=set(result['plain'])
 ''' https://en.wikipedia.org/wiki/Hill_climbing#Variants
  Random-restart hill climbing '''
 meta = []
-
+lexicon_modules=['verbosenulls','simplesubanagr']
 lexicon, longest_word, lexicon_avg_len, lexicon_freq=cipher_utils.load_lexicon(ARG_LANG)
 if ARG_MODULE.startswith('crib_'):
   module=crib
@@ -262,18 +262,18 @@ if ARG_MODULE.startswith('crib_'):
   log('CRIB_MODULE '+str(crib_module))
   crib.set_module(crib_module, crib_text, ARG_LANG)
   ##lexicon=crib.CRIB+lexicon #add crib words to lexicon
-  if module_name=='verbosenulls': # TODO factory method to create modules?
-    crib_module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
+  if module_name in lexicon_modules: # TODO factory method to create modules?
+    crib_module.set_lexicon(lexicon_freq, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='simplesub':
   module=simplesub
 elif ARG_MODULE=='simplesubanagr':
   module=simplesubanagr
-  module.set_lexicon_freq(lexicon_freq, longest_word, lexicon_avg_len)
+  module.set_lexicon(lexicon_freq, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='verbosebigr':
   module=verbosebigr
-elif ARG_MODULE in ['verbosenulls','simplesubanagr']:
+elif ARG_MODULE in lexicon_modules:
   module=verbosenulls
-  module.set_lexicon(lexicon, longest_word, lexicon_avg_len)
+  module.set_lexicon(lexicon_freq, longest_word, lexicon_avg_len)
 elif ARG_MODULE=='nulls':
   module=nulls
 elif ARG_MODULE=='syl':
