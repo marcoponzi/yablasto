@@ -56,8 +56,8 @@ time python3.8 yablasto.py lat.anagr texts/examples/desine.lat.simplesubanagr si
 cat tmp/out.desine.simplesubanagr | tail -10
 
 echo
-echo lat.anagr texts/examples/primum_aries.lat.simplesubanagr crib_constellations_simplesubanagr  $LONG 21
-time python3.8 yablasto.py lat.anagr texts/examples/primum_aries.lat.simplesubanagr crib_constellations_simplesubanagr  $LONG 21  >\
-             tmp/out.primum_aries.lat.simplesubanagr
-cat tmp/out.primum_aries.lat.simplesubanagr | tail -10
+echo lat.anagr texts/examples/oblique_descendendo_est_aquarius.lat.simplesubanagr crib_constellations_simplesubanagr  $SHORT 21
+time python3.8 yablasto.py lat.anagr texts/examples/oblique_descendendo_est_aquarius.lat.simplesubanagr crib_constellations_simplesubanagr  $SHORT 21  >\
+             tmp/out.oblique.lat.simplesubanagr
+cat tmp/out.oblique.lat.simplesubanagr | tail -10
 
