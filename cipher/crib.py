@@ -123,10 +123,11 @@ def find_partial_words(plain_text):
     candidates=get_words_for_crib(text_copy,cr_w)
     ## my_log(candidates)
     for cand in candidates:
-      if abs(len(cand)-len(cr_w))<len(cr_w)/2 and min(len(cr_w),len(cand))>3:
+      min_len=min(len(cr_w),len(cand))
+      if abs(len(cand)-len(cr_w))<min_len/2 and min_len>3:
         avglen=(len(cand)+len(cr_w))/2
         ratio=1.0-(Levenshtein.distance(cand,cr_w)/avglen)
-        if  ratio>=.6:
+        if  ratio>.61:
           my_log(["Partial: ",cand,cr_w,ratio])
           res[cand+'|crib:'+cr_w]=ratio*len(cr_w)
           text_copy=text_copy.replace(cand,'')

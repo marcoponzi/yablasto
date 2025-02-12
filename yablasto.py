@@ -288,9 +288,11 @@ elif ARG_MODULE=='syl':
 else:
   log("Unknown module "+ARG_MODULE)
 
+
 if is_anagr:
-  cipher_text=re.sub('[\n ]*$','',ctext)
-  cipher_text = cipher_text.replace(' ',',') # comma , as word separator
+  cipher_text=re.sub('[\n ,][\n ,]*',',',ctext) # comma , as word separator
+  cipher_text=re.sub('^,','',cipher_text)
+  cipher_text=re.sub(',$','',cipher_text)
 else:
   cipher_text = clean_input(ctext)
 log('cipher text:'+cipher_text)
