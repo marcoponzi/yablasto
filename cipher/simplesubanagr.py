@@ -23,12 +23,35 @@ def set_lexicon(lexicon_freq, longest_word, lexicon_avg_len):
 ######
 def init_key(cipher_text, plain_alphabet):
     no_sep=re.sub(',','',cipher_text)
-    return simplesub.init_key(no_sep,plain_alphabet)
+    key=simplesub.init_key(no_sep,plain_alphabet)
     #key=dict()
     #cipher_alphabet=sorted(list(set(list(no_sep))))
     #for cipher_char in cipher_alphabet:
     #  key[cipher_char]=cipher_char.upper()
-    #return key
+    #key['x']='A'
+    #key['y']='E'
+    #key['b']='Q'
+    #key['c']='M'
+    #key['d']='F'
+    #key['f']='X'
+    #key['g']='G'
+    #key['h']='D'
+    #key['i']='I'
+    #key['l']='C'
+    #key['m']='N'
+    #key['n']='O'
+    #key['o']='L'
+    #key['p']='B'
+    #key['q']='P'
+    #key['r']='U'
+    #key['s']='R'
+    #key['t']='T'
+    #key['u']='A'
+    #key['v']='V'
+    #key['x']='E'
+    #key['y']='S'
+
+    return key
 
 ######
 # change a single plain character

@@ -38,3 +38,9 @@ USE ITALIAN QUADGRAMS AND PLANET NAMES (U=V); UP TO 1/3 OF CIPHER CHARACTERS ARE
 
 python3.6 yablasto.py ita.uv texts/vms/f67r2_planets.eva.rev crib_planets_nulls 500 2
 
+TODO:
+
+Test crib without word spaces.
+
+Fix example: eng texts/examples/thesearethegenerations_long.eng.verbosenulls verbosenulls 150 2
+

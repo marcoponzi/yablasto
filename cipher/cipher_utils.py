@@ -1,12 +1,31 @@
 import re
+import sys
+import random
 
+# this is a pointer to the module object instance itself.
+this = sys.modules[__name__]
+
+# we can explicitly make assignments on it 
+this.IS_MY_LOG=False
+
+# input list sorted by decreasing frequency
+# favors first elements in list
+def frequency_choice(in_list):
+  index=min(random.randint(0,len(in_list)-1),random.randint(0,len(in_list)-1),random.randint(0,len(in_list)-1))
+  return in_list[index]
+
+def set_my_log(mybool):
+  this.IS_MY_LOG=mybool
 
 def frmt(myfloat,dec=5):
   # return "{:.5f}".format(myfloat)
   formstr="{:."+str(dec)+"f}"
   return formstr.format(myfloat)
   
-  
+def my_log(msg):
+  if this.IS_MY_LOG:
+    print(msg)
+
 # longer keys first
 def sort_dict(indict):
   new_d = {}

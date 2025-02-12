@@ -50,15 +50,24 @@ def load_quadgrams(lang):
 def parse_qgram(lang, is_anagr):
     # create dict of ngram strings : ints
     ngrams = {}
-    plain_alphabet=set()
+    plain_alphabet_dict=dict()
     qtot = 0
     txt = load_quadgrams(lang)
     for line in txt:
         tmp = line.split(' ')
         qgm_count = int(tmp[1])
         ngrams[tmp[0]] = qgm_count
-        plain_alphabet.update(set(list(tmp[0])))
+        for c in list(tmp[0]):
+          if not c in plain_alphabet_dict.keys():
+            plain_alphabet_dict[c]=1
+          else:
+            plain_alphabet_dict[c]+=1
         qtot += qgm_count
+
+    dict_sorted=dict(sorted(plain_alphabet_dict.items(), key=lambda x: x[1],reverse=True))
+    print("plain_alphabet_dict: "+str(dict_sorted))
+    plain_alphabet=list(dict_sorted.keys())
+    print("plain_alphabet: "+str(plain_alphabet))
 
     ################
     # 456976 combos
@@ -288,6 +297,7 @@ log('cipher text:'+cipher_text)
 log(' ')
 
 if ARG_RESTARTS=='score':
+  cipher_utils.set_my_log(True)
   evaluate_by_lexicon2(cipher_text.upper(), lexicon, longest_word, lexicon_avg_len, is_anagr)
   tot_score, quad_score=score_text(cipher_text.upper(),module)
   print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
@@ -319,6 +329,9 @@ for restart in range(restarts ):
         log("BEST KEY "+cipher_utils.key_to_str(parent_key))
      result = hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress,module)
      if result['key']!=best_res['key'] and result['score']>=best_res['score']: #if equal score, new key is shorter
+       cipher_utils.set_my_log(True)
+       score_text(result['plain'], module) # log score components
+       cipher_utils.set_my_log(False)
        log(" *** old "+frmt(best_res['score'])+" "+str(best_res['plain']))
        log(" *** new "+frmt(result['score'])+" "+str(result['plain']))
        log(" old key "+cipher_utils.key_to_str(best_res['key']))
@@ -340,7 +353,7 @@ log(' ')
 
 best_plain=best_res['plain']
 log("best_plain: "+str(best_plain))
-
+cipher_utils.set_my_log(True)
 evaluate_by_lexicon2(best_plain.upper(), lexicon, longest_word, lexicon_avg_len, is_anagr)
 tot_score, quad_score=score_text(best_plain,module)
 print("QUAD_SCORE: "+frmt(quad_score)+" TOT_SCORE: "+frmt(tot_score))
