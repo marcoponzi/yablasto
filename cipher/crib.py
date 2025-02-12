@@ -126,7 +126,7 @@ def find_partial_words(plain_text):
       if abs(len(cand)-len(cr_w))<len(cr_w)/2 and min(len(cr_w),len(cand))>3:
         avglen=(len(cand)+len(cr_w))/2
         ratio=1.0-(Levenshtein.distance(cand,cr_w)/avglen)
-        if  ratio>=.75:
+        if  ratio>=.6:
           my_log(["Partial: ",cand,cr_w,ratio])
           res[cand+'|crib:'+cr_w]=ratio*len(cr_w)
           text_copy=text_copy.replace(cand,'')
