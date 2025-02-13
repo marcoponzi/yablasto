@@ -14,14 +14,12 @@ LABELS='+@L'
 for p in f68r3 f3r f34v 
 do
 $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 $LABELS -u1 -f0 | grep $p |\
- sed -e 's/@[0-9][0-9]*;/-/g' | sed -e 's/<[^>]*>//g' | tr '?' '-' | sed -e 's/[^a-z -]//g' | sed -e 's/  */ /g' |\
- grep '[a-z]'> ../texts/vms/$p'.eva'
+ source ./clean_ivtt.sh > ../texts/vms/$p'.eva'
  LABELS='' # only select labels for f68r3
 done
 
 $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 -u1 -@L -f0 | grep f67r2 | grep 'Pb'|\
- sed -e 's/@[0-9][0-9]*;/-/g' | sed -e 's/<[^>]*>//g' | tr '?' '-' | sed -e 's/[^a-z -]//g' | sed -e 's/  */ /g' |\
- grep '[a-z]'> ../texts/vms/f67r2_12paragraphs.eva
+ source ./clean_ivtt.sh  > ../texts/vms/f67r2_12paragraphs.eva
  
 for p in f3r f34v f68r3 f67r2_red f67r2_black f67r2_12paragraphs f67r2_planets
 do
