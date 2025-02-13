@@ -23,12 +23,21 @@ this = sys.modules[__name__]
 this.crib_module = None
 this.CRIB = None
 
+  
+def load_crib(fname):
+    words=list()
+    with open("texts/cribs/"+fname, "r") as infile:
+        for line in infile:
+            w = line.split("\n")[0]
+            words.append( w.upper() )
+    return sorted(sorted(words), key=len, reverse=True)
+
 def set_module(m, crib_text, lang):
   #global  crib_module
   print(m)
   this.crib_module=m
   this.CRIB=list()
-  for line in cipher_utils.load_crib(crib_text+'.'+lang):
+  for line in load_crib(crib_text+'.'+lang):
     line=line.replace(',',' ')
     for w in line.split(' '):
       if len(w)>0 and not w in this.CRIB:

@@ -18,10 +18,16 @@ $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 $LABELS -u1 -f0 | grep $p
  LABELS='' # only select labels for f68r3
 done
 
+$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep f67r2 |\
+  grep -v '<!' | head -12 | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12red.eva
+  
+$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep f67r2 |\
+  grep 'Ls' | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12inner.eva
+
 $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 -u1 -@L -f0 | grep f67r2 | grep 'Pb'|\
  source ./clean_ivtt.sh  > ../texts/vms/f67r2_12paragraphs.eva
  
-for p in f3r f34v f68r3 f67r2_red f67r2_black f67r2_12paragraphs f67r2_planets
+for p in f3r f34v f68r3 f67r2_red f67r2_black f67r2_12paragraphs f67r2_planets f67r2_12inner f67r2_12red
 do
 $BITRANSDIR/bitrans -f $BITRANSDIR/Eva-Cuva.bit ../texts/vms/$p'.eva' ../texts/vms/$p'.cuva'
 cat ../texts/vms/$p'.cuva' | tr [:upper:] [:lower:] | sed -e 's/[^a-z ]//g' > temp.cuva

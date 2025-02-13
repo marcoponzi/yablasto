@@ -51,14 +51,6 @@ def key_to_str(mydict):
   for k in mydict.keys():
     res+=str(k)+":"+str(mydict[k])+" "
   return res
-  
-def load_crib(fname):
-    words=list()
-    with open("texts/examples/"+fname, "r") as infile:
-        for line in infile:
-            w = line.split("\n")[0]
-            words.append( w.upper() )
-    return sorted(sorted(words), key=len, reverse=True)
     
 def word_break_with_gaps(s, word_list):
     word_set = set(word_list)
