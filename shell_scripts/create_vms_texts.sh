@@ -10,27 +10,38 @@ BITRANSDIR=~/rec/voynich/software/bitrans
 # f0=keep foliation information
 # <! page header (removed)
 
-LABELS='+@L'
-for p in f68r3 f3r f34v 
+
+for p in f68r1 f68r2 f68r3 
 do
-$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 $LABELS -u1 -f0 | grep $p |\
+$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep $p |\
  source ./clean_ivtt.sh > ../texts/vms/$p'.eva'
- LABELS='' # only select labels for f68r3
 done
 
+cat ../texts/vms/f68r[12].eva > ../texts/vms/f68r_1_2.eva
+
+for p in f3r f34v 
+do
+$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 -u1 -f0 | grep $p |\
+ source ./clean_ivtt.sh > ../texts/vms/$p'.eva'
+done
+
+# zodiac / month labels: spaces removed to make sets of 12 words
 $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep f67r2 |\
-  grep -v '<!' | head -12 | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12red.eva
+  grep -v '<!' | head -12  | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12red_sp.eva
+$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep f67r2 |\
+  grep 'Ls' | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12inner_sp.eva
   
-$IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 +@L -u1 -f0 | grep f67r2 |\
-  grep 'Ls' | source ./clean_ivtt.sh  > ../texts/vms/f67r2_12inner.eva
+cat ../texts/vms/f67r2_12red_sp.eva | tr -d ' ' > ../texts/vms/f67r2_12red_nosp.eva
+cat ../texts/vms/f67r2_12inner_sp.eva | tr -d ' ' > ../texts/vms/f67r2_12inner_nosp.eva
 
 $IVTTDIR/ivtt $IVTTDIR/ZL_ivtff_2b.txt -a0 -c4 -h1 -s1 -u1 -@L -f0 | grep f67r2 | grep 'Pb'|\
  source ./clean_ivtt.sh  > ../texts/vms/f67r2_12paragraphs.eva
  
-for p in f3r f34v f68r3 f67r2_red f67r2_black f67r2_12paragraphs f67r2_planets f67r2_12inner f67r2_12red
+for p in f3r f34v f68r3 f67r2_12paragraphs f67r2_planets f67r2_12inner_sp f67r2_12red_sp f67r2_12inner_nosp f67r2_12red_nosp \
+  f68r1 f68r2 f68r_1_2
 do
 $BITRANSDIR/bitrans -f $BITRANSDIR/Eva-Cuva.bit ../texts/vms/$p'.eva' ../texts/vms/$p'.cuva'
-cat ../texts/vms/$p'.cuva' | tr [:upper:] [:lower:] | sed -e 's/[^a-z ]//g' > temp.cuva
+cat ../texts/vms/$p'.cuva' | tr [:upper:] [:lower:] | sed -e 's/[^a-z -]//g' > temp.cuva
 mv temp.cuva  ../texts/vms/$p'.cuva'
 cat ../texts/vms/$p'.eva' | sed -f eva_bench_gallows.sed > ../texts/vms/$p'.bg' # bench and gallows replaced
 cat ../texts/vms/$p'.bg'| tr -d ' ' | sed -f feaster_spaces.sed > ../texts/vms/$p'.feaster'
