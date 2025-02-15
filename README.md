@@ -16,27 +16,27 @@ quadgrams/lat.uv.e.quadgrams: OE and AE replaced with E (before removing spaces)
 
 COMPUTE SCORE OF PLAIN TEXT ACCORDING TO CIPHER METHOD (syl):
 
-python3.6 yablasto.py lat texts/examples/desine.lat syl score 
+python3.8 yablasto.py lat texts/examples/desine.lat syl score 
 
 SIMPLE SUBSTITUTION:
 
-python3.6 yablasto.py lat texts/examples/desine.lat.simplesub simplesub 50  2  > tmp/out.simplesub
+python3.8 yablasto.py lat texts/examples/desine.lat.simplesub simplesub 50  2  > tmp/out.simplesub
 
 SOME BIGRAMS USED AS VERBOSE CIPHER SYMBOLS:
 
-python3.6 yablasto.py lat texts/examples/desine.lat.verbosebigr verbosebigr 400  2 > tmp/out.verbosebigr
+python3.8 yablasto.py lat texts/examples/desine.lat.verbosebigr verbosebigr 400  2 > tmp/out.verbosebigr
 
 UP TO 1/3 OF CIPHER CHARACTERS ARE NULLS:
 
-python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.nulls nulls  400  2  > tmp/out.nulls
+python3.8 yablasto.py eng texts/examples/thesearethegenerations_long.eng.nulls nulls  400  2  > tmp/out.nulls
 
 HOMOPHONIC CIPHER WHERE EACH PLAIN TEXT CHARACTER IS ENCODED AS A SYLLABLE/SHORT WORD (ONE TO MANY):
 
-python3.6 yablasto.py eng texts/examples/thesearethegenerations_long.eng.syl syl 400 2  > tmp/out.syl
+python3.8 yablasto.py eng texts/examples/thesearethegenerations_long.eng.syl syl 400 2  > tmp/out.syl
 
 USE ITALIAN QUADGRAMS AND PLANET NAMES (U=V); UP TO 1/3 OF CIPHER CHARACTERS ARE NULLS:
 
-python3.6 yablasto.py ita.uv texts/vms/f67r2_planets.eva.rev crib_planets_nulls 500 2
+python3.8 yablasto.py ita.uv texts/vms/f67r2_planets.eva.rev crib_planets_nulls 500 2
 
 TODO:
 

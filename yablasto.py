@@ -130,7 +130,6 @@ def decrypt2(cipher_text,parent_key, is_anagr):
 def hill_climbing(cipher_text, plateau, sleep, parent_key,perc_progress, module):
     child_key = ""
     best_score, ignore = score_text(decrypt2(cipher_text,parent_key, is_anagr ), module)
-    ## best_score = -99999 #-72.6613499895892
     best_key=parent_key # -85.74
     parent_score=best_score
 
@@ -202,7 +201,7 @@ def score_text(text, module):
     l=len(alpha)
     l3 = l**3
     l2 = l**2
-    best_val=-99999999
+    best_val=-math.inf
     best_quad='____'
     for i in range(0,len(text)-3):
       val=-5*len(text)
@@ -227,13 +226,7 @@ def evaluate_by_lexicon2(plain_text,lexicon, longest_word, lexicon_avg_len, is_a
 
 #############################################
 #Initial variables
-result = {'key':'','plain':'','score':''}
-best_score = -99999
 best_plain = ""
-best_res=dict()
-best_res['score']=best_score
-best_res['plain']='_'
-best_res['key']=dict()
 
 ARG_LANG=sys.argv[1]
 ARG_CTEXT_FILE=sys.argv[2]
@@ -252,8 +245,6 @@ else:
   qgram,plain_alphabet = parse_qgram(ARG_LANG,False)
 
 log(' ')
-
-plains=set(result['plain'])
 
 ##################   META  #######
 ''' https://en.wikipedia.org/wiki/Hill_climbing#Variants
@@ -314,6 +305,11 @@ restarts = int(ARG_RESTARTS) # 300
 # stop after plateu consecutive iters w/o score increase
 plateau = 600+restarts*5 #100+restarts*10
 
+best_res=dict()
+best_res['key']=module.init_key(cipher_text, plain_alphabet)
+best_res['plain']=decrypt2(cipher_text,best_res['key'], is_anagr )
+best_res['score'],ignore=score_text(best_res['plain'], module)
+plains=set(best_res['plain'])
 for restart in range(restarts ):
      perc_progress=float(restart+0.01)/restarts
 

@@ -48,7 +48,8 @@ def change_key(key, cipher_text, plain_alphabet):
       key[k1]=key[k2]
       key[k2]=temp
 
-    return cipher_utils.sort_dict(key)
+    res=cipher_utils.sort_dict(key)
+    return res
     
 def score(quad_score, plain_text):
   return quad_score

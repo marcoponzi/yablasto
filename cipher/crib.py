@@ -81,14 +81,15 @@ def count_exact_words(plain_text):
     is_comma=True
     plain_text=','+plain_text+','
     separator=','
-  for w in crib_copy: # find and remove whole words
+  for w in this.CRIB: # find and remove whole words
+    ##print([separator+w+separator , plain_text])
     if separator+w+separator in plain_text:
-        ## print("foundWord: "+w)
+        ##print("foundWord: "+w)
         found_words.append(w)
         crib_copy.remove(w) # remove from crib when found
         ## ngrams+=len(w)
         plain_text=plain_text.replace(w,'')
-  return found_words,plain_text
+  return found_words,plain_text,crib_copy
   
 def find_ngrams(plain_text,N):
   ngrams=list()
@@ -125,21 +126,27 @@ def get_words_for_crib(plain_text,crib_word):
   ##my_log("get_words_for_crib: "+str(res))
   return res
   
-def find_partial_words(plain_text):
+def find_partial_words(plain_text,cur_crib):
   res=dict()
   text_copy=copy.deepcopy(plain_text)
-  for cr_w in this.CRIB:
+  cur_crib=copy.deepcopy(cur_crib)
+  cur_crib.sort()
+  cur_crib=sorted(cur_crib, key=len, reverse=True) #decreasing len
+  for cr_w in cur_crib:
     candidates=get_words_for_crib(text_copy,cr_w)
-    ## my_log(candidates)
+    candidates.sort()
+    candidates = sorted(candidates, key=len, reverse=True) #decreasing len
+    ## my_log("CANDIDATES: "+str(candidates))
     for cand in candidates:
       min_len=min(len(cr_w),len(cand))
-      if abs(len(cand)-len(cr_w))<min_len/2 and min_len>3:
-        avglen=(len(cand)+len(cr_w))/2
-        ratio=1.0-(Levenshtein.distance(cand,cr_w)/avglen)
-        if  ratio>.61:
+      if (cr_w in cur_crib) and abs(len(cand)-len(cr_w))<min_len/2 and min_len>3:
+        max_len=max(len(cr_w),len(cand))
+        ratio=1.0-(Levenshtein.distance(cand,cr_w)/max_len)
+        if  ratio>.6:
           my_log(["Partial: ",cand,cr_w,ratio])
-          res[cand+'|crib:'+cr_w]=ratio*len(cr_w)
+          res[cand+'|crib:'+cr_w]=ratio*ratio*len(cr_w) # ratio squared
           text_copy=text_copy.replace(cand,'')
+          cur_crib.remove(cr_w)
           
   return res
   
@@ -147,10 +154,11 @@ def score(quad_score, plain_text):
   plain_text=plain_text.replace(' ',',')
   my_log(plain_text)
   orig_len=len(plain_text)
+  nw=len(plain_text.split(','))
   orig_score=crib_module.score(quad_score, plain_text)
   
-  found_words,plain_text=count_exact_words(plain_text)
-  partial_distances=find_partial_words(plain_text)
+  found_words,plain_text,cur_crib=count_exact_words(plain_text)
+  partial_distances=find_partial_words(plain_text,cur_crib)
   part_nums=partial_distances.values()
   
   ##ngrams=find_ngrams(plain_text, 3) # 3=trigrams, 2=bigrams
@@ -158,6 +166,7 @@ def score(quad_score, plain_text):
   quad_weight=3 # 1 higher value, more weight to quad_score        
   #return 2*ngrams + found_parts+ 3*found_words + orig_score
   #my_log(partial_distances)
-  my_log("quad_score: " +str(orig_score) + " partial_distances: "+str(partial_distances)+" words: "+str(found_words))
-  return orig_len*orig_score/(quad_weight*orig_len+1*sum(part_nums) +3*pow(len(found_words)+len(''.join(found_words)),1.5))
+  my_log("orig_score: " +str(orig_score) + " partial_distances: "+str(partial_distances)+" words: "+str(found_words))
+  return pow(nw*orig_len,0.7)*orig_score/\
+     (quad_weight*orig_len+1*sum(part_nums) +3*pow(len(found_words)+len(''.join(found_words)),1.5))
 
